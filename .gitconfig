@@ -1,0 +1,19 @@
+[merge]
+	tool = tortoisemerge
+[mergetool "tortoise"]
+	cmd = "TortoiseMerge.exe" -base:"$BASE" -theirs:"$REMOTE" -mine:"$LOCAL" -merged:"$MERGED"
+[mergetool]
+	keepBackup = false
+[user]
+	name = Matthieu Vachon
+	email = matthieu.o.vachon@gmail.com
+[rerere]
+	enabled = true
+[gui]
+	encoding = utf-8
+[core]
+	autocrlf = true
+	eol = native
+	safecrlf = warn
+[config]
+	safecrlf = warn
