@@ -3,7 +3,7 @@ export SYSTEM_PATH=$PATH
 
 export GIT_ROOT="/c/Program Files (x86)/Git"
 export GRADLE_ROOT="/c/Local/Gradle/1.6"
-export JAVA_ROOT="/c/Local/Java/x64/1.7.0_25"
+export JAVA_ROOT="/c/Local/Java/1.8.0_11"
 export MAVEN_ROOT="/c/Local/Maven/3.1.0"
 export MINGW_ROOT="/mingw64"
 export MYSQL_ROOT="/c/Local/Mysql/5.6.17"

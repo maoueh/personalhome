@@ -81,8 +81,9 @@ export_path() {
   # Append
   PATH="$PATH:$GIT_ROOT/cmd"
 
-  export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${MINGW_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export INFOPATH="${HOME}/local/info:${MINGW_ROOT}/info:${INFOPATH}"
+  export JAVA_HOME="$JAVA_ROOT"
+  export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${MINGW_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export MANPATH="${HOME}/local/man:${MINGW_ROOT}/share/man:${MANPATH}"
   export PATH
 }
