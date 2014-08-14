@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-export MANPATH="/mingw32/share/man:${MANPATH}"
-export MSYSTEM="MINGW32"
-export PATH="/mingw32/bin:${PATH}"
-export PKG_CONFIG_PATH="/mingw32/lib/pkgconfig"
