@@ -2,6 +2,13 @@
 *
 
 # Except these files
+!.bash_aliases
+!.bash_functions
+!.bash_logout
+!.bash_profile
+!.bashrc
 !.gitignore
+!.inputrc
 !LICENSE
 !README.md
+!local/bin/nugrant2env
