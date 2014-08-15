@@ -3,10 +3,12 @@
 
 # Except these files
 !.bash_aliases
+!.bash_env
 !.bash_functions
 !.bash_logout
 !.bash_profile
 !.bashrc
+!.gitconfig
 !.gitignore
 !.inputrc
 !.minttyrc
