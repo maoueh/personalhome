@@ -64,11 +64,11 @@ cd_func ()
  
 alias cd=cd_func
 
-export_path() {
+reconfigure() {
   # Prepend
   PATH="$SYSTEM_PATH"
-  PATH="$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$PATH"
-  PATH="$MAVEN_ROOT/bin:$NODE_ROOT:$MINGW_ROOT/bin:$PATH"
+  PATH="$ANT_ROOT/bin:$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$PATH"
+  PATH="$MAVEN_ROOT/bin:$NODE_ROOT:$TOOLCHAIN_ROOT/bin:$PATH"
   PATH="$MYSQL_ROOT/bin:$NOTEPADPP_ROOT:$PATH"
   PATH="$PYTHON_ROOT:$PYTHON_ROOT/Scripts:$PATH"
   PATH="$RUBY_ROOT/bin:$SVN_ROOT/bin:$PATH"
@@ -81,9 +81,69 @@ export_path() {
   # Append
   PATH="$PATH:$GIT_ROOT/cmd"
 
-  export INFOPATH="${HOME}/local/info:${MINGW_ROOT}/info:${INFOPATH}"
-  export JAVA_HOME="$JAVA_ROOT"
-  export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${MINGW_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export MANPATH="${HOME}/local/man:${MINGW_ROOT}/share/man:${MANPATH}"
   export PATH
+
+  export INFOPATH="${HOME}/local/info:${TOOLCHAIN_ROOT}/info:${INFOPATH}"
+  export JAVA_HOME="$JAVA_ROOT"
+  export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${TOOLCHAIN_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export MANPATH="${HOME}/local/man:${TOOLCHAIN_ROOT}/share/man:${MANPATH}"
+}
+
+##
+# Calls system editor defined by "$DEFAULT_EDITOR" that you
+# put in your `.bash_env` file.
+#
+edit() {
+  ${DEFAULT_EDITOR} "$@"
+}
+
+##
+# This function start a new bash with the correct path defined
+# for the specified toolchain passed in argument effectively
+# changing build environment. When no argument is passed,
+# it prints the current defined toolchain.
+#
+toolchain() {
+  # TODO: transform to map
+  local mingw64_name=mingw64
+  local mingw64_path=/mingw64
+
+  local msys2_name=msys2
+  local msys2_path=/usr
+
+  local rpi_name=rpi
+  local rpi_path=/opt/crosstool/arm-linux-gnueabihf
+
+  if [ $# -eq 0 ]
+  then
+	case "$TOOLCHAIN_ROOT" in
+	$mingw64_path)
+	  echo "Current toolchain: ${mingw64_name}"
+	  ;;
+	$msys2_path)
+	  echo "Current toolchain: ${msys2_name}"
+	  ;;
+	$rpi_path)
+	  echo "Current toolchain: $rpi_name"
+	  ;;
+	*)
+	  echo "Unknown toolchain path: ${TOOLCHAIN_ROOT}"
+	  ;;
+	esac
+  else
+	case "$1" in
+	$mingw64_name)
+	  echo "Activating toolchain '$1' (in new bash process)"
+	  TOOLCHAIN_ROOT="${mingw64_path}" bash --login -i
+	  ;;
+	$msys2_name)
+	  echo "Activating toolchain '$1' (in new bash process)"
+	  TOOLCHAIN_ROOT="${msys2_path}" bash --login -i
+	  ;;
+	$rpi_name)
+	  echo "Activating toolchain '$1' (in new bash process)"
+	  TOOLCHAIN_ROOT="${rpi_path}" bash --login -i
+	  ;;
+	esac
+  fi
 }

@@ -120,7 +120,7 @@ fi
 #
 
 cd "${HOME}"
-export_path
+reconfigure
 
 if [ -f "${HOME}/.autoenv/activate.sh" ]; then
   source "${HOME}/.autoenv/activate.sh"
