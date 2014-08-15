@@ -40,21 +40,26 @@ readme. It could contain at term more files but I don't see how.
 Base branch for stuff that works with `bash` but not tied to a 
 particular distro (at least trying really hard).
 
-### Branch `msys2-bash`
+### Branch `msys2`
 
 Base branch for stuff that works with `bash` but and tied to a 
 particular to an [msys2](http://sourceforge.net/projects/msys2/) distro
 (Windows based) (at least trying really hard).
 
-### Other branches
+It is tied to branch `bash`, maybe some day we will split this in
+multiple other branches (like `msys2-bash`, `msys2-zsh`, etc.).
 
-These are machine specific branches. 
+### Branch `machine` (or `machine-<name>` for specific machine)
 
-My current system has the following specifications:
+This the final branch that should be mirrored in your home directory.
+In my case, I keep the git repository directly in `~` so I can see 
+if I changed something and it must be committed.
 
- * [MSYS2](http://sourceforge.net/projects/msys2/) installed in `C:\Gnu`
- * Development tools installed in `C:\Local`
- * Windows 7
+You simply merge the most specific branch for your machine and sets
+some environment variables to customize the environment.
+
+This branch should probably never be push. But you might be careful
+and keep it stored.
 
 ## Discussion & Ideas
 
@@ -70,3 +75,8 @@ Maybe keeping a private chef repository each machine being a node and
 leverage cookbook and roles to leverage this to create something better
 than this. I did not evaluated yet the difference between the current
 git approach and this idea.
+
+## Contribution
+
+Pick the right branch to work it and add a feature or modification that
+would work for it. Send a merge request.
