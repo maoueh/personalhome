@@ -9,6 +9,13 @@
 !.bashrc
 !.gitignore
 !.inputrc
+!.minttyrc
+!.vimrc
 !LICENSE
 !README.md
+!gradle.properties
+!local/bin/depends.dll
+!local/bin/depends.exe
+!local/bin/handle.exe
 !local/bin/nugrant2env
+!local/bin/procexp.exe
