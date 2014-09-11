@@ -13,6 +13,8 @@
 !.vimrc
 !LICENSE
 !README.md
+!.bash.d/
+!.bash.d/git-prompt.sh
 !local/bin/depends.dll
 !local/bin/depends.exe
 !local/bin/handle.exe
