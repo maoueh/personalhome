@@ -1,0 +1,15 @@
+# Declare files as using automatic text detection
+* text=auto
+
+# Declare files that will always have LF line endings on checkout.
+*.sh text eol=lf
+.bash_aliases text eol=lf
+.bash_functions text eol=lf
+.bash_logout text eol=lf
+.bash_profile text eol=lf
+.bashrc text eol=lf
+.inputrc text eol=lf
+
+# Declare files that will always have CRLF line endings on checkout.
+*.bat textfile eol=crlf
+
