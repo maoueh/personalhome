@@ -11,7 +11,7 @@
 [rerere]
 	enabled = 1
 [push]
-	default = matching
+	default = simple
 [help]
 	autocorrect = 1
 [color]
