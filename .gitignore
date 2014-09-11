@@ -12,3 +12,5 @@
 !.inputrc
 !LICENSE
 !README.md
+!.bash.d/
+!.bash.d/git-prompt.sh
