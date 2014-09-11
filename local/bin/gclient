@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+import os
+import sys
+
+arguments = sum([sys.argv[1:2], ["-v"], sys.argv[2:]], [])
+os.system("/c/Local/DepotTools/gclient " + " ".join(arguments))

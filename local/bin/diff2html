@@ -1,0 +1,102 @@
+#!/usr/bin/env ruby
+#
+# Convert diff output to colorized HTML.
+
+class Line
+  def initialize(line, options = {})
+    @line = line
+    @style = options[:style]
+    @prefix = options[:prefix]
+  end
+  
+  def output()
+    return if @style == :index
+    return if @style == :current_file
+    return if @style == :previous_file
+   
+    puts "</div>" if @style == :diff
+    puts "<div class='container'>" if @style == :diff
+   
+    puts "<div class='#{@style.to_s()}'>#{@line}</div>"
+    
+    puts "<br />" if @style == :context
+  end
+end
+
+class LineParser
+  def parse(raw_line)
+    if raw_line.start_with?("diff")
+      return Line.new(raw_line.sub(/diff /, ""), :style => :diff, :prefix => "diff ")
+    end
+  
+    if raw_line.start_with?("index")
+      return Line.new(raw_line.sub(/index /, ""), :style => :index, :prefix => "index ")
+    end
+    
+    if raw_line.start_with?("---")
+      return Line.new(raw_line.sub(/--- /, ""), :style => :previous_file, :prefix => "--- ")
+    end
+    
+    if raw_line.start_with?("+++")
+      return Line.new(raw_line.sub(/\+\+\+ /, ""), :style => :current_file, :prefix => "+++ ")
+    end
+    
+    if raw_line.start_with?("@@")
+      # TODO: Should be more intelligent and strip whole context data (i.e. @@ -44,10 +44,9 @@)
+      return Line.new(raw_line, :style => :context)
+    end
+    
+    if raw_line.start_with?("-")
+      return Line.new(raw_line.sub(/-/, ""), :style => :previous_revision, :prefix => "-")
+    end
+    
+    if raw_line.start_with?("+")
+      return Line.new(raw_line.sub(/\+/, ""), :style => :current_revision, :prefix => "+")
+    end
+    
+    return Line.new(raw_line, :style => :normal)
+  end
+end
+
+def convert()
+  puts <<-HTML
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+    <head>
+    <title>Colorized Diff</title>
+    </head>
+    <style>
+    .container            { margin: auto; width: 640px; border: 1px solid black; margin-bottom: 10px;              }
+    .diff                 { background-color: white; color: #0A2436; font-weight: bold; }
+    .index                { background-color: white; color: #008000;  }
+    .previous_file        { background-color:#FFFF80; color: #800000; }
+    .current_file         { background-color:#FFFF80; color: #800000; }
+    .context              { background-color: white; color: #FF0000;  }
+    .previous_revision    { background-color: #FF8080; color: black;  }
+    .current_revision     { background-color: #80FF80; color: black;  }
+    .normal               { background-color: white; color: black;   }
+    </style>
+    <body>
+    <div class='container'>
+  HTML
+
+  line_parser = LineParser.new()
+  
+  lines = []
+  File.open(ARGV[0]).each do |line|
+    lines << line_parser.parse(line)
+  end
+  
+  lines.each do |line|
+    line.output()
+  end
+  
+  puts <<-HTML
+    </div>
+    </body>
+    </html>
+  HTML
+end
+
+convert()
