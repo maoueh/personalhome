@@ -1,0 +1,24 @@
+[user]
+	name = Matthieu Vachon
+	email = matthieu.ouellette-vachon@nuecho.com
+[core]
+	excludesfile = c:/Users/movachon/.gitignore
+	eol = native
+	autocrlf = false
+[merge]
+	tool = tortoisemerge
+	renormalize = true
+[rerere]
+	enabled = 1
+[push]
+	default = matching
+[help]
+	autocorrect = 1
+[color]
+	ui = always
+    branch = always
+    diff = always
+    interactive = always
+    status = always
+[gui]
+	encoding = utf-8
