@@ -97,6 +97,14 @@ if [ -f "${HOME}/.bash_aliases" ]; then
 fi
 
 #
+## Bash Scripts
+#
+
+for bash_script_file in $(export LC_COLLATE=C; echo ~/.bash.d/*.sh); do
+  [ -e "${bash_script_file}" ] && . "${bash_script_file}"
+done
+
+#
 ## Umask
 #
 
@@ -116,12 +124,16 @@ if [ -f "${HOME}/.bash_functions" ]; then
 fi
 
 #
+## Path
+#
+
+# Source file that configure PATH correctly
+if [ -f "${HOME}/.bash_path" ]; then
+  source "${HOME}/.bash_path"
+fi
+
+#
 ## Activations
 #
 
 cd "${HOME}"
-export_path
-
-if [ -f "${HOME}/.autoenv/activate.sh" ]; then
-  source "${HOME}/.autoenv/activate.sh"
-fi
