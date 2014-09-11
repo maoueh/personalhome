@@ -9,12 +9,16 @@
 !.bash_path
 !.bash_profile
 !.bashrc
+!.gemrc
 !.gitattributes
 !.gitconfig
 !.gitignore
+!.gitk
 !.inputrc
 !.minttyrc
+!.npmrc
 !.vimrc
+!.vagrantuser
 !gradle.properties
 !LICENSE
 !README.md
