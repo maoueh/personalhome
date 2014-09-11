@@ -13,4 +13,5 @@
 !LICENSE
 !README.md
 !.bash.d/
+!.bash.d/git-completion.sh
 !.bash.d/git-prompt.sh
