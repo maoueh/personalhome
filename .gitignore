@@ -13,6 +13,7 @@
 !.gitattributes
 !.gitconfig
 !.gitignore
+!.gitignoreglobal
 !.gitk
 !.inputrc
 !.minttyrc

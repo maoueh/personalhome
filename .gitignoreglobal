@@ -1,0 +1,16 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Application generated files
+*.orig
+*.swp
+*.stackdump
+*.dump
+erlide.log
+External\ Plug-in\ Libraries/

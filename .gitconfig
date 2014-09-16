@@ -2,7 +2,7 @@
 	name = Matthieu Vachon
 	email = matthieu.ouellette-vachon@nuecho.com
 [core]
-	excludesfile = c:/Users/movachon/.gitignore
+	excludesfile = c:/Users/movachon/.gitignoreglobal
 	eol = native
 	autocrlf = false
 [merge]
