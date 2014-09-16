@@ -39,5 +39,5 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;
 export DEFAULT_EDITOR=${DEFAULT_EDITOR:="notepad++"}
 
 # Certificates
-export SSL_CERT_FILE=${SSL_CERT_FILE:="/etc/ssl/cert.pem"}
-export SSL_CERT_DIR=${SSL_CERT_DIR:="/etc/ssl/certs"}
+export SSL_CERT_FILE=${SSL_CERT_FILE:="/usr/ssl/cert.pem"}
+export SSL_CERT_DIR=${SSL_CERT_DIR:="/usr/ssl/certs"}
