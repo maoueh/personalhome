@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+def main()
+  runner_jar = ENV['JETTY_RUNNER']
+  
+  error("Jetty runner env must be set to jetty jar location") if not runner_jar
+  error("At least a war file must be passed in arguments") if ARGV.size() <= 0
+
+  system("java #{ENV['JVM_ARGS']} -jar #{ENV['JETTY_RUNNER']} #{ARGV.join(" ")}")
+end
+
+def error(message = nil)
+  puts message if message
+  
+  exit 1
+end
+
+main()

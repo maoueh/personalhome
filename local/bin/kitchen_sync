@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require 'set'
+
+$DRY_RUN = true
+$DRY_RUN = false if ARGV.include?("-f")
+
+def sync()
+    branch = fetch_branch()
+    branches = fetch_branches()
+    remotes = filter_remotes(branches)
+
+    if has_modifications()
+        puts "Commit your changes, including untracked files, before syncing your kitchen"
+        exit(1)
+    end
+    
+    remotes.each do |remote|
+        execute("git fetch #{remote}")
+    end
+    
+    branches.each do |id, data|
+        next if data[:name] !~ /^chef-vendor/
+    
+        puts "Processing #{data[:name]}" if not $DRY_RUN
+        if not branch_exists(data[:name])
+          execute("git branch --track #{data[:name]} #{data[:remote]}/#{data[:name]}")
+        else
+          execute("git checkout #{data[:name]}")
+          execute("git pull #{data[:remote]} #{data[:name]}")
+        end
+        
+        execute("git push #{data[:remote]} #{data[:name]}")
+    end
+    
+    execute("git checkout #{branch}")
+end
+
+def execute(command)
+    puts "Would execute '#{command}'" if $DRY_RUN
+    system(command) if not $DRY_RUN
+end
+
+def fetch_branches()
+    branches = {}
+    `git branch --no-color -r`.split().each do |branch|
+      /([\w-]+)\/([\w-]+)/.match(branch)
+      
+      branches[branch] = {
+        :remote => $1,
+        :name => $2,
+      }
+    end
+    
+    branches
+end
+
+def fetch_branch()
+    symbolic_ref = `git symbolic-ref HEAD`
+    /^refs\/heads\/([\w-]+)/.match(symbolic_ref)
+    
+    $1
+end
+
+def filter_remotes(branches)
+    remotes = branches.map do |id, data|
+       data[:remote]
+    end
+    
+    remotes.to_set()
+end
+
+def has_modifications()
+    `git status --porcelain`.split().count() != 0
+end
+
+def branch_exists(name)
+    `git branch --color=never -l`.split().include?(name)
+end
+
+sync()

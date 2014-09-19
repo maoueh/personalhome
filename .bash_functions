@@ -64,31 +64,6 @@ cd_func ()
  
 alias cd=cd_func
 
-reconfigure() {
-  # Prepend
-  PATH="$SYSTEM_PATH"
-  PATH="$ANT_ROOT/bin:$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$PATH"
-  PATH="$MAVEN_ROOT/bin:$NODE_ROOT:$TOOLCHAIN_ROOT/bin:$PATH"
-  PATH="$MYSQL_ROOT/bin:$NOTEPADPP_ROOT:$PATH"
-  PATH="$PYTHON_ROOT:$PYTHON_ROOT/Scripts:$PATH"
-  PATH="$RUBY_ROOT/bin:$SVN_ROOT/bin:$PATH"
-  PATH="$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT:$PATH"
-  
-  if [ -d "${HOME}/local/bin" ]; then
-	PATH="${HOME}/local/bin:${PATH}"
-  fi
-  
-  # Append
-  PATH="$PATH:$GIT_ROOT/cmd"
-
-  export PATH
-
-  export INFOPATH="${HOME}/local/info:${TOOLCHAIN_ROOT}/info:${INFOPATH}"
-  export JAVA_HOME="$JAVA_ROOT"
-  export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${TOOLCHAIN_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  export MANPATH="${HOME}/local/man:${TOOLCHAIN_ROOT}/share/man:${MANPATH}"
-}
-
 ##
 # Calls system editor defined by "$DEFAULT_EDITOR" that you
 # put in your `.bash_env` file.
@@ -96,6 +71,7 @@ reconfigure() {
 edit() {
   ${DEFAULT_EDITOR} "$@"
 }
+
 
 ##
 # This function start a new bash with the correct path defined

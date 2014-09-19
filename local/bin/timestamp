@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+def timestamp()
+    timestamp = compute_timestamp()
+
+    if ARGV.empty?()
+        puts timestamp
+        exit(0)
+    end
+    
+    ARGV.each do |argument|
+        puts format_argument(argument, timestamp)
+    end
+end
+
+def format_argument(argument, timestamp)
+    has_pattern = (argument =~ /\{\}/)
+    if not has_pattern
+      return "#{argument}.#{timestamp}"
+    end
+    
+    argument.gsub("{}", timestamp)
+end
+
+def compute_timestamp(format = "%Y%m%d%H%M%S")
+  Time.now.strftime(format)
+end
+
+timestamp()

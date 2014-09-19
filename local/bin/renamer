@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'optparse'
+
+$options = {}
+$options[:dry_run] = true
+$options[:pattern] = "**/*.hash"
+
+$options[:regex] = /([a-z0-9_]+\/)+[a-z0-9_]+\.ulaw\./
+$options[:replacement] = "\\1"
+
+def main()
+  parse_arguments()
+
+  Dir.glob($options[:pattern]).each do |file|
+    renamed_file = file.gsub($options[:regex], $options[:replacement])
+    next if file == renamed_file
+    
+    puts "Would rename #{file} to #{renamed_file}" if $options[:dry_run]
+    FileUtils.mv(file, renamed_file) if not $options[:dry_run]
+  end
+end
+
+def parse_arguments()
+  parser = OptionParser.new do |opts|
+    opts.banner = sprintf("Usage: %s [options]", File.basename(__FILE__))
+    opts.separator ""
+    opts.separator "options:"
+    
+    opts.on("-d", "--dry-run", "Execute program only print renaming information, nothing is renamed") do
+      $options[:dry_run] = true
+    end
+    
+    opts.on("-f", "--force", "Required to do the actual renaming, otherwise a dry-run is performed") do
+      $options[:dry_run] = false
+    end
+  end
+
+  parser.parse!(ARGV)
+end
+
+main()
