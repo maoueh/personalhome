@@ -12,6 +12,7 @@
 [gui]
 	encoding = utf-8
 [core]
+	excludesfile = c:/Users/Matt/.gitignoreglobal
 	autocrlf = true
 	eol = native
 	safecrlf = warn
