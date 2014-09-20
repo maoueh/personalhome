@@ -72,6 +72,9 @@ edit() {
   ${DEFAULT_EDITOR} "$@"
 }
 
+explorer() {
+  explorer.exe `cygpath -w "$@"`
+}
 
 ##
 # This function start a new bash with the correct path defined
