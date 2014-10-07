@@ -15,8 +15,9 @@ export ERLANG_ROOT=${ERLANG_ROOT:="/c/Local/Erlang/5.9.3.1"}
 export GEM_ROOT=${GEM_ROOT:="/c/Users/movachon/.gem/ruby/2.0.0"}
 export GIT_ROOT=${GIT_ROOT:="/c/Local/Git/1.8.5.2"}
 export GRADLE_ROOT=${GRADLE_ROOT:="/c/Local/Gradle/2.0"}
+export GROOVY_ROOT=${GROOVY_ROOT:="/c/Local/Groovy/2.3.7"}
 export GRAPHVIZ_ROOT=${GRAPHVIZ_ROOT:="/c/Local/Graphviz/2.36"}
-export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/x64/1.6.0.45"}
+export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/x64/1.7.0.55"}
 export LATEX_ROOT=${LATEX_ROOT:="/c/Local/Miktek/miktex"}
 export NGINX_ROOT=${NGINX_ROOT:="/c/Local/Nginx/1.3.15"}
 export NODE_ROOT=${NODE_ROOT:="/c/Local/Node/0.10.29"}
