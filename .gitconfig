@@ -5,6 +5,7 @@
 	excludesfile = c:/Users/movachon/.gitignoreglobal
 	eol = native
 	autocrlf = false
+	longpaths = true
 [merge]
 	tool = tortoisemerge
 	renormalize = true

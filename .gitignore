@@ -30,6 +30,7 @@
 !local/bin/
 !/local/bin/chrome_dev
 !/local/bin/diff2html
+!/local/bin/find_bundler_gem_location
 !/local/bin/gclient
 !/local/bin/git-merged
 !/local/bin/git-svn-diff
@@ -40,4 +41,8 @@
 !/local/bin/procexp.exe
 !/local/bin/python
 !/local/bin/renamer
+!/local/bin/restart-cluster
+!/local/bin/search-logs
+!/local/bin/sort-logs
+!/local/bin/split_genesys_doc
 !/local/bin/timestamp

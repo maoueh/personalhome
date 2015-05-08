@@ -50,13 +50,13 @@ set indexcirclecolor green
 set circlecolors {white blue gray blue blue}
 set linkfgcolor blue
 set circleoutlinecolor SystemWindowText
-set geometry(main) 1680x944+0+30
+set geometry(main) 1662x751+0+198
 set geometry(state) normal
-set geometry(topwidth) 1680
+set geometry(topwidth) 1662
 set geometry(topheight) 288
-set geometry(pwsash0) "991 1"
-set geometry(pwsash1) "1464 1"
-set geometry(botwidth) 1332
-set geometry(botheight) 651
+set geometry(pwsash0) "888 1"
+set geometry(pwsash1) "1520 1"
+set geometry(botwidth) 1052
+set geometry(botheight) 458
 set permviews {{{Vue rapide} {} {--all --branches --tags --remotes {--since=1 month ago}} {}}
 }

@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+
+puts Bundler.rubygems.find_name(ARGV[0]).first.full_gem_path

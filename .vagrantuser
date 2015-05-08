@@ -1,4 +1,5 @@
 chef:
+  kitchen: "C:/Nu/kitchen2"
   cookbooks_path: "C:/Nu/kitchen/cookbooks"
   roles_path: "C:/Nu/kitchen/roles"
   nodes_path: "C:/Nu/kitchen/nodes"
@@ -8,5 +9,5 @@ synced_folder:
   type: ~
 repository:
   kawa: "C:/Nu/kawa"
-  nuecho: "C:/Nu/master"
-  nubot: "C:/Nu/nubot/robot"
+  nuecho: "C:/Nu/nuecho/nuechp"
+  nubot: "C:/Nu/nubot/nubot"

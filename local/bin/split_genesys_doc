@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+def main(arguments) 
+  usage() if arguments.length <= 1
+  usage("Root directory [#{arguments[0]}] does not exists.") if not File.exists?(arguments[0])
+  usage("Root directory [#{arguments[0]}] must be a directory.") if not File.directory?(arguments[0])
+  usage("Invalid version [#{arguments[1]}].") if not version?(arguments[1])
+    
+  version = arguments[1]
+  output_directory = File.expand_path(arguments[2].nil? ? "." : arguments[2])
+
+  Dir.chdir(arguments[0])
+  
+  components().each do |component, path|
+    puts "Processing #{component}"
+    
+    if not File.exists?(path)
+      puts " Error: path #{path} is not present."
+      next
+    end
+    
+    `zip #{output_directory}/#{component}-#{version}-javadoc.jar ./#{path}/**/*`
+  end
+end
+
+def usage(error = nil)
+  puts "ERROR: #{error}" if error
+  puts "" if error
+  
+  puts "usage: split_genesys_doc <doc_directory> <version> [<output_directory>]"
+  puts ""
+  puts "Split Genesys documentation into multiple single"
+  puts "archive so they can be attached independently"
+  puts "to all Genesys SDK jars."
+  puts ""
+  puts "Simply specify the documentation root directory"
+  puts "and the script will create all javadoc jars from"
+  puts "it and puts the generated jars in the current folder."
+  puts ""
+  puts "You can specify a `<output_directory>` as the second"
+  puts "argument to control where to put generated javadoc"
+  puts "jars."
+
+  exit 1
+end
+
+def components() 
+  {
+    "apptemplate" => "com/genesyslab/platform/apptemplate",
+    "comappblock" => "com/genesyslab/platform/applicationblocks/com",
+    "commons" => "com/genesyslab/platform/commons",
+    "configurationprotocol" => "com/genesyslab/platform/configuration/protocol",
+    "connection" => "com/genesyslab/platform/commons/connection",
+    "contactsprotocol" => "com/genesyslab/platform/contacts/protocol",
+    # It seems there is no package keyvaluebinding in collections (at least for Javadoc 8.1.2)
+    "kvlistbinding" => "com/genesyslab/platform/commons/collections/keyvaluebinding",
+    "kvlists" => "com/genesyslab/platform/commons",
+    "logging" => "com/genesyslab/platform/logging",
+    "managementprotocol" => "com/genesyslab/platform/management/protocol",
+    "messagebrokerappblock" => "com/genesyslab/platform/applicationblocks/commons",
+    "openmediaprotocol" => "com/genesyslab/platform/openmedia/protocol",
+    "outboundprotocol" => "com/genesyslab/platform/outbound/protocol",
+    "packagedstatisticsdeprecated" => "com/genesyslab/platform/reporting/protocol",
+    "protocol" => "com/genesyslab/platform/commons/protocol",
+    "protocolmanagerappblock" => "com/genesyslab/platform/applicationblocks/commons/protocols",
+    "reportingprotocol" => "com/genesyslab/platform/reporting/protocol",
+    "routingprotocol" => "com/genesyslab/platform/routing/protocol",
+    "switchpolicy" => "com/genesyslab/platform/switchpolicy",
+    "system" => "com/genesyslab/platform/commons",
+    "voiceprotocol" => "com/genesyslab/platform/voice/protocol",
+    "warmstandbyappblock" => "com/genesyslab/platform/applicationblocks/warmstandby",
+    "webmediaprotocol" => "com/genesyslab/platform/webmedia/protocol",
+  }
+end
+
+def version?(input)
+  input =~ /[0-9]+\.[0-9]+\.[0-9]+.*/
+end
+
+main(ARGV)
