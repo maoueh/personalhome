@@ -65,10 +65,10 @@ cd_func ()
 alias cd=cd_func
 
 ##
-# Calls system editor defined by "$DEFAULT_EDITOR" that you
+# Calls system editor defined by "$EDITOR" that you
 # put in your `.bash_env` file.
 #
 edit() {
-  ${DEFAULT_EDITOR} "$@"
+  ${EDITOR} "$@"
 }
 
