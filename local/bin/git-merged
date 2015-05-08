@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+if [ "x${1}" == "x" ]
+then
+  echo "usage: git merged <remote> [<branch>]"
+  echo ""
+  echo "Perform necessary actions to merge into <branch>"
+  echo "(defaults to master) a feature or fix branch that"
+  echo "was merged into upstream <remote>."
+  echo ""
+  echo "Actions performed:"
+  echo "    # Stores current branch in <current>"
+  echo "    git fetch <remote> -p"
+  echo "    git checkout <branch>"
+  echo "    git merge <remote>/<current>"
+  echo "    git branch -d <current>"
+  exit 1
+fi
+
+current=$(git symbolic-ref --short -q HEAD)
+branch="${2:-master}"
+
+git fetch $1 -p
+git checkout "${branch}"
+git merge "${1}/${branch}"
+git branch -d "${current}"
