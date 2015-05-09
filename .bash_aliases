@@ -21,9 +21,9 @@ alias egrep='egrep --color=auto'              # show differences in colour
 alias fgrep='fgrep --color=auto'              # show differences in colour
 
 # Some shortcuts for different directory listings
-alias ls='ls -hF --color=tty --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
-alias dir='ls -hF --format=vertical --color=tty --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
-alias vdir='ls -hF --format=long --color=tty --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
-alias ll='ls -lhF --color=tty --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
-alias la='ls -AhF --color=tty --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
-alias lc='ls -ChF --color=tty --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'                              
+alias ls='ls -hF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
+alias dir='ls -hF --format=vertical --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
+alias vdir='ls -hF --format=long --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
+alias ll='ls -lhF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
+alias la='ls -AhF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
+alias lc='ls -ChF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'                              
