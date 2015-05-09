@@ -27,3 +27,6 @@ alias vdir='ls -hF --format=long --color=tty --ignore="\$Recycle.Bin" --ignore="
 alias ll='ls -lhF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
 alias la='ls -AhF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
 alias lc='ls -ChF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'                              
+
+# Some msys2 aliases
+alias open='start'
