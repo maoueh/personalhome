@@ -54,7 +54,7 @@
   set bell-style visible
 
   # Show all instead of beeping first
-  set show-all-if-ambiguous off
+  set show-all-if-ambiguous on
 
   # Filename completion/expansion
   set completion-ignore-case on
@@ -78,6 +78,9 @@
   # Insert a space character then performs
   # a history expansion in the line
   #Space: magic-space
+
+  # Colored completion stats
+  set colored-stats on
 #$endif
 
 # MSYSTEM is emacs based
