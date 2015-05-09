@@ -73,7 +73,17 @@ edit() {
 }
 
 explorer() {
-  explorer.exe `cygpath -w "$@"`
+  if [ $# -eq 0 ]
+  then
+    local current_directory=`pwd`
+    explorer.exe `cygpath -w "${current_directory}"`
+  elif [ $# -eq 1 ]
+  then
+    explorer.exe `cygpath -w "$1"`
+  else
+    # TODO: Support multiple arguments
+    echo "explorer: multiple arguments not supported"
+  fi
 }
 
 ##
