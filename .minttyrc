@@ -11,3 +11,5 @@ Rows=25
 ScrollbackLines=9999999
 Scrollbar=none
 ScrollMod=ctrl
+AllowBlinking=yes
+ClicksPlaceCursor=no

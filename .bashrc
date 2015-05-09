@@ -67,6 +67,13 @@ COMP_TAR_INTERNAL_PATHS=1
 ## History Options
 #
 
+# Unlimited history
+export HISTFILESIZE=
+export HISTSIZE=
+
+# Custom history to avoid some session truncating to 500
+export HISTFILE=~/.shell_history
+
 # Don't put duplicate lines in the history.
 export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
 
@@ -77,7 +84,15 @@ export HISTIGNORE=$'[ \t]*:&:[fb]g:exit'
 export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls:ll' # Ignore the ls and ll commands as well
 
 # Whenever displaying the prompt, write the previous line to disk
-export PROMPT_COMMAND="history -a"
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a"
+
+#
+## Bash Scripts
+#
+
+for bash_script_file in $(export LC_COLLATE=C; echo ~/.bash.d/*.sh); do
+  [ -e "${bash_script_file}" ] && . "${bash_script_file}"
+done
 
 #
 ## Environment
@@ -97,12 +112,12 @@ if [ -f "${HOME}/.bash_aliases" ]; then
 fi
 
 #
-## Bash Scripts
+## Functions
 #
 
-for bash_script_file in $(export LC_COLLATE=C; echo ~/.bash.d/*.sh); do
-  [ -e "${bash_script_file}" ] && . "${bash_script_file}"
-done
+if [ -f "${HOME}/.bash_functions" ]; then
+  source "${HOME}/.bash_functions"
+fi
 
 #
 ## Umask
@@ -113,27 +128,3 @@ done
 # umask 027
 # Paranoid: neither group nor others have any perms:
 # umask 077
-
-#
-## Functions
-#
-
-# Some people use a different file for functions
-if [ -f "${HOME}/.bash_functions" ]; then
-  source "${HOME}/.bash_functions"
-fi
-
-#
-## Path
-#
-
-# Source file that configure PATH correctly
-if [ -f "${HOME}/.bash_path" ]; then
-  source "${HOME}/.bash_path"
-fi
-
-#
-## Activations
-#
-
-cd "${HOME}"
