@@ -78,7 +78,7 @@
   # Insert a space character then performs
   # a history expansion in the line
   #Space: magic-space
-  
+
   # Colored completion stats
   set colored-stats on
 #$endif
