@@ -1,8 +1,8 @@
 [user]
-	name = Matthieu Vachon
-	email = matthieu.ouellette-vachon@nuecho.com
+	name = <User Name>
+	email = <user.email>@nuecho.com
 [core]
-	excludesfile = c:/Users/movachon/.gitignoreglobal
+	excludesfile = c:/Users/<home>/.gitignoreglobal
 	eol = native
 	autocrlf = false
 	longpaths = true

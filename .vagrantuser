@@ -1,13 +1,6 @@
 chef:
   kitchen: "C:/Nu/kitchen2"
-  cookbooks_path: "C:/Nu/kitchen/cookbooks"
-  roles_path: "C:/Nu/kitchen/roles"
-  nodes_path: "C:/Nu/kitchen/nodes"
-email: "matthieu.ouellette-vachon@nuecho.com"
-hostname: "mendes.d.nuecho.com"
+email: "<user.email>@nuecho.com"
+hostname: "<machine>.d.nuecho.com"
 synced_folder:
   type: ~
-repository:
-  kawa: "C:/Nu/kawa"
-  nuecho: "C:/Nu/nuecho/nuechp"
-  nubot: "C:/Nu/nubot/nubot"

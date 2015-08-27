@@ -11,33 +11,9 @@ export PS1='\[\033]0;$MSYSTEM:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[32m\]\u@\h \[
 export EDITOR=${EDITOR:="notepad++"}
 
 # User Programs
-export ANT_ROOT=${ANT_ROOT:="/c/Local/Ant"}
-export BUCKMINSTER_ROOT=${BUCKMINSTER_ROOT:="/c/Local/Buckminster"}
-export COMPOSER_ROOT=${COMPOSER_ROOT:="/c/Local/Composer"}
-export DEPOT_TOOLS_ROOT=${DEPOT_TOOLS_ROOT:="/c/Local/DepotTools"}
-export ERLANG_ROOT=${ERLANG_ROOT:="/c/Local/Erlang/17.4"}
-export GEM_ROOT=${GEM_ROOT:="/c/Users/movachon/.gem/ruby/2.0.0"}
-export GIT_ROOT=${GIT_ROOT:="/c/Local/Git/1.9.5"}
-export GRADLE_ROOT=${GRADLE_ROOT:="/c/Local/Gradle/2.2"}
-export GROOVY_ROOT=${GROOVY_ROOT:="/c/Local/Groovy/2.3.7"}
-export GRAPHVIZ_ROOT=${GRAPHVIZ_ROOT:="/c/Local/Graphviz/2.36"}
 export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/1.7.0.72"}
-export LATEX_ROOT=${LATEX_ROOT:="/c/Local/Miktek/miktex"}
-export MAVEN_ROOT=${MAVEN_ROOT:="/c/Local/Maven/3.2.3"}
-export NGINX_ROOT=${NGINX_ROOT:="/c/Local/Nginx/1.3.15"}
-export NODE_ROOT=${NODE_ROOT:="/c/Local/Node/0.12.2"}
-export NPM_ROOT=${NPM_ROOT:="${HOME}/.npm"}
 export NOTEPADPP_ROOT=${NOTEPADPP_ROOT:="/c/Users/Public/Notepad++"}
-export PACKER_ROOT=${PACKER_ROOT:="/c/Local/Packer/0.6.0"}
-export PANDOC_ROOT=${PANDOC_ROOT:="/c/Local/Pandoc"}
-export PHANTOMJS_ROOT=${PHANTOMJS_ROOT:="/c/Local/PhantomJS/1.9.7"}
-export PHP_ROOT=${PHP_ROOT:="/c/Local/Php/5.3.28"}
-export PREMAKE_ROOT=${PREMAKE_ROOT:="/c/Local/Premake/4.3"}
-export PYTHON_ROOT=${PYTHON_ROOT:="/c/Local/Python/2.7.3"}
-export RUBY_ROOT=${RUBY_ROOT:="/c/Local/Ruby/2.0.0"}
-export SOX_ROOT=${SOX_ROOT:="/c/Local/Sox"}
 export TOOLCHAIN_ROOT=${TOOLCHAIN_ROOT:="/usr"}
-export TOMCAT_ROOT=${TOMCAT_ROOT:="/c/Local/Tomcat"}
 export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.6.5"}
 export VIRTUAL_BOX_ROOT=${VIRTUAL_BOX_ROOT:="/c/Program Files/Oracle/VirtualBox"}
 
@@ -46,25 +22,15 @@ export SYSTEM_PATH=${SYSTEM_PATH:="${PATH}"}
 
 # User PREPEND_PATH
 PREPEND_PATH="./bin:${HOME}/local/bin"
-PREPEND_PATH+=":$ANT_ROOT/bin:$BUCKMINSTER_ROOT:$COMPOSER_ROOT:$DEPOT_TOOLS_ROOT"
-PREPEND_PATH+=":$ERLANG_ROOT/bin:$GEM_ROOT/bin:$GRADLE_ROOT/bin:$GROOVY_ROOT/bin"
-PREPEND_PATH+=":$GRAPHVIZ_ROOT/bin:$JAVA_ROOT/bin:$LATEX_ROOT/bin:$MAVEN_ROOT/bin"
-PREPEND_PATH+=":$NGINX_ROOT:$NOTEPADPP_ROOT:$NODE_ROOT:$NPM_ROOT"
-PREPEND_PATH+=":$PACKER_ROOT:$PANDOC_ROOT:$PHANTOMJS_ROOT:$PHP_ROOT:$PREMAKE_ROOT"
-PREPEND_PATH+=":$RUBY_ROOT/bin:$SOX_ROOT:$TOOLCHAIN_ROOT/bin:$TOMCAT_ROOT/bin"
-PREPEND_PATH+=":$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT"
-
-# User APPEND_PATH
-APPEND_PATH="$GIT_ROOT/cmd"
+PREPEND_PATH+=":$JAVA_ROOT/bin:$NOTEPADPP_ROOT:$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT"
 
 # User PATH
-export PATH="${PREPEND_PATH}:${SYSTEM_PATH}:${APPEND_PATH}"
+export PATH="${PREPEND_PATH}:${SYSTEM_PATH}"
 
 # User Programs env
 export INFOPATH="${HOME}/local/info:${TOOLCHAIN_ROOT}/info:${INFOPATH}"
 export JAVA_HOME="${JAVA_ROOT}"
 export MANPATH="${HOME}/local/man:${TOOLCHAIN_ROOT}/share/man:${MANPATH}"
-export NODE_PATH="`cygpath -wa ${NPM_ROOT}/node_modules`"
 export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${TOOLCHAIN_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 # User Trusted Certificates
