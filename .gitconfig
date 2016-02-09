@@ -1,9 +1,10 @@
 [merge]
 	tool = tortoisemerge
-[mergetool "tortoise"]
-	cmd = "TortoiseMerge.exe" -base:"$BASE" -theirs:"$REMOTE" -mine:"$LOCAL" -merged:"$MERGED"
+	renormalize = true
 [mergetool]
 	keepBackup = false
+[mergetool "tortoise"]
+    cmd = "TortoiseMerge.exe" -base:"$BASE" -theirs:"$REMOTE" -mine:"$LOCAL" -merged:"$MERGED"
 [user]
 	name = Matthieu Vachon
 	email = matthieu.o.vachon@gmail.com
@@ -17,5 +18,16 @@
 	eol = native
 	safecrlf = warn
 	editor = vim
-[config]
-	safecrlf = warn
+	longpaths = true
+[push]
+	default = simple
+[help]
+	autocorrect = 1
+[color]
+	ui = always
+    branch = always
+    diff = always
+    interactive = always
+    status = always
+[gui]
+	encoding = utf-8

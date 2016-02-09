@@ -1,3 +1,5 @@
 name: "Matthieu Vachon"
 email: "matthieu.o.vachon@gmail.com"
 each: "name"
+synced_folder:
+  type: ~
