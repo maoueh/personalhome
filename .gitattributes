@@ -9,6 +9,7 @@
 .bash_profile text eol=lf
 .bashrc text eol=lf
 .inputrc text eol=lf
+.vimrc text eol=lf
 
 # Declare files that will always have CRLF line endings on checkout.
 *.bat textfile eol=crlf
