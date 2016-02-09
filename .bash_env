@@ -30,8 +30,8 @@ export RVM_ROOT=${RVM_ROOT:="$HOME/.rvm"}
 export SVN_ROOT=${SVN_ROOT:="/c/Program Files/TortoiseSVN"}
 export SYMFONY_ROOT=${SYMFONY_ROOT:="/c/Local/Symfony"}
 export TOOLCHAIN_ROOT=${TOOLCHAIN_ROOT:="/usr"}
-export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.6.5"}
-export VIRTUAL_BOX_ROOT=${VIRTUAL_BOX_ROOT:="/c/Program Files/VirtualBox"}
+export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.7.4"}
+export VIRTUAL_BOX_ROOT=${VIRTUAL_BOX_ROOT:="/c/Local/VirtualBox"}
 
 # User SYSTEM_PATH
 export SYSTEM_PATH=${SYSTEM_PATH:="${PATH}"}
@@ -40,7 +40,8 @@ export SYSTEM_PATH=${SYSTEM_PATH:="${PATH}"}
 PATH="$PATH:$GIT_ROOT/cmd"
 
 # User PREPEND_PATH
-PREPEND_PATH="./bin:${HOME}/local/bin:$CHEFDK_ROOT/bin"
+PREPEND_PATH="./bin:${HOME}/local/bin:/usr/bin:/usr/local/bin:/mingw64/bin"
+PREPEND_PATH+=":$CHEFDK_ROOT/bin"
 PREPEND_PATH+=":$ANT_ROOT/bin:$COMPOSER_ROOT:$ERLANG_ROOT/bin"
 PREPEND_PATH+=":$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$MAVEN_ROOT/bin"
 PREPEND_PATH+=":$NPM_ROOT:$NODE_ROOT:$TOOLCHAIN_ROOT/bin:$MYSQL_ROOT/bin"

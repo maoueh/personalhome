@@ -38,6 +38,7 @@
 !/local/bin/kitchen_sync
 !/local/bin/node
 !/local/bin/procexp.exe
+!/local/bin/provision_openelec
 !/local/bin/python
 !/local/bin/renamer
 !/local/bin/timestamp

@@ -16,5 +16,6 @@
 	autocrlf = true
 	eol = native
 	safecrlf = warn
+	editor = vim
 [config]
 	safecrlf = warn

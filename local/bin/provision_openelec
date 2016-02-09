@@ -1,0 +1,132 @@
+#!/usr/bin/env sh
+
+##
+# Script to update the system partition of an already
+# existing OpenELEC installation. Use at your own risk!
+#
+# For new provisionning, use a disk image to initially
+# create disk layout correctly.
+#
+
+usage() {
+  echo "provision_openelec <source> <target>"
+  echo ""
+  echo "  <source>     Path where OpenELEC files can be found"
+  echo "  <target>     Path where to copy OpenELEC files (unix format)"
+  echo ""
+}
+
+error() {
+  echo "ERROR: $1"
+  echo ""
+  usage
+
+  exit 1
+}
+
+fatal() {
+  echo "$1"
+  exit 1
+}
+
+check() {
+  if [ ! -f "$1.md5" ]; then
+    fatal "Expected integrity file '$1.md5' is missing."
+  fi
+
+  md5sum -c --quiet "$1.md5" > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+	local expected=`cat "$1.md5" | cut -d' ' -f1`
+	local actual=`md5sum "$1" | cut -d' ' -f1`
+  
+    fatal "Integrity failed for '$1': expected '$expected', got '$actual'."
+  fi
+}
+
+copy() {
+  local command="rsync -r"
+
+  which $command > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    command="cp -r"
+  fi
+
+  `$command $1 $2 > /dev/null`
+}
+
+provision() {
+  local source="$1"
+  local target="$2"
+
+  if [ ! -d "$source" ]; then
+    error "Source folder '$source' does not exist"
+  fi
+
+  if [ ! -d "$target" ]; then
+    error "Target folder '$target' does not exist"
+  fi
+
+  pushd . > /dev/null
+  cd "$source"
+  
+  echo -n "This will remove **all data** on '$target', continue? [y/n]: "
+  read answer
+  if [ "$answer" != "y" ]; then
+    exit 0
+  fi
+  
+  if [ ! -f "$target/SYSTEM" ]; then
+    echo -n "The target folder '$target' does not seem to contain a previous OpenELEC installation, continue? [y/n]: "
+    read answer
+    if [ "$answer" != "y" ]; then
+      exit 0
+    fi
+  fi
+  
+  echo ""
+  
+  echo "Clearing previous data"
+  rm -rf $target/*
+  
+  echo "Checking source files integrity"
+  check "target/KERNEL"
+  check "target/SYSTEM"
+  
+  echo "Copying files"
+  copy "3rdparty/bootloader/*" "$target/"
+  copy "licenses" "$target/"
+  copy "target/KERNEL" "$target/kernel.img"
+  copy "target/KERNEL.md5" "$target/kernel.img.md5"
+  copy "target/SYSTEM" "$target/SYSTEM"
+  copy "target/SYSTEM.md5" "$target/SYSTEM.md5"
+  copy "openelec.ico" "$target/"
+  copy "README.md" "$target/"
+  copy "RELEASE" "$target/"
+
+  sed -i 's/target\/KERNEL/kernel.img/g' "$target/kernel.img.md5"
+  sed -i 's/target\/SYSTEM/SYSTEM/g' "$target/SYSTEM.md5"
+  
+  echo "Creating boot commands file"
+  printf "boot=/dev/mmcblk0p1 disk=/dev/mmcblk0p2 quiet" > "$target/cmdline.txt"
+
+  cd "$target"
+  echo "Checking target files integrity"
+  check "kernel.img"
+  check "SYSTEM"
+  
+  echo "Syncing changes"
+  sync
+
+  echo "Completed"
+  
+  popd > /dev/null
+}
+
+if [ $# -ne 2 ]; then
+  error "Missing arguments"
+fi
+
+provision "$1" "$2"
+
+
+
