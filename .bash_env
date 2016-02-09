@@ -41,20 +41,32 @@ PREPEND_PATH="./bin:${HOME}/local/bin"
 PREPEND_PATH+=":$CHEFDK_ROOT/bin"
 PREPEND_PATH+=":$ANT_ROOT/bin:$COMPOSER_ROOT:$ERLANG_ROOT/bin"
 PREPEND_PATH+=":$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$MAVEN_ROOT/bin"
-PREPEND_PATH+=":$NPM_ROOT:$NODE_ROOT:$TOOLCHAIN_ROOT/bin:$MYSQL_ROOT/bin"
+PREPEND_PATH+=":$NPM_ROOT:$NODE_ROOT:$MYSQL_ROOT/bin"
 PREPEND_PATH+=":$NOTEPADPP_ROOT:$PHP_ROOT:$PYTHON_ROOT:$PYTHON_ROOT/Scripts"
 PREPEND_PATH+=":$REBAR_ROOT:$RUBY_ROOT/bin:$SVN_ROOT/bin:$SYMFONY_ROOT"
 PREPEND_PATH+=":$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT"
+
+PREPEND_PATH+=":$TOOLCHAIN_ROOT/bin"
 
 # User PATH
 export PATH="${PREPEND_PATH}:${SYSTEM_PATH}"
 
 # User Programs env
 export INFOPATH="${HOME}/local/info:${TOOLCHAIN_ROOT}/info:${INFOPATH}"
-export JAVA_HOME="${JAVA_ROOT}"
 export MANPATH="${HOME}/local/man:${TOOLCHAIN_ROOT}/share/man:${MANPATH}"
-export NODE_PATH="`cygpath -wa ${NPM_ROOT}/node_modules`"
 export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${TOOLCHAIN_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+
+# Java
+export JAVA_HOME="${JAVA_ROOT}"
+
+# Node
+export NODE_PATH="`cygpath -wa ${NPM_ROOT}/node_modules`"
+
+# Ruby
+if which ruby >/dev/null && which gem >/dev/null; then
+  export GEM_ROOT="`cygpath -wa $(ruby -rubygems -e 'puts Gem.user_dir')`"
+  export PATH="${PREPEND_PATH}:${GEM_ROOT}\bin:${SYSTEM_PATH}"
+fi
 
 # User Trusted Certificates
 export SSL_CERT_FILE=${SSL_CERT_FILE:="/usr/ssl/cert.pem"}
