@@ -32,12 +32,15 @@
 !/local/bin/diff2html
 !/local/bin/find_bundler_gem_location
 !/local/bin/gclient
+!/local/bin/gitlab-config-diff
 !/local/bin/git-merged
 !/local/bin/git-svn-diff
 !/local/bin/jetty
-!/local/bin/jq.exe
 !/local/bin/kitchen_sync
 !/local/bin/node
+!/local/bin/pcap2wav
+!/local/bin/play_ulaw
+!/local/bin/play-pcap
 !/local/bin/procexp.exe
 !/local/bin/python
 !/local/bin/renamer
@@ -46,3 +49,4 @@
 !/local/bin/sort-logs
 !/local/bin/split_genesys_doc
 !/local/bin/timestamp
+!/local/bin/txt2ulaw

@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+play -t raw -r 8000 -b 8 -e mu-law "$@"

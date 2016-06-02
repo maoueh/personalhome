@@ -1,0 +1,515 @@
+#!/usr/bin/env perl
+#
+# Script to parse a Wireshark printout and extract the audio from the RTP packets
+#
+# Wireshark printout should have:
+#  - Packet summary line
+#  - Packet details "As displayed" or "All expanded"
+#  - Packet bytes
+#
+# Now extracts RTSP data also
+# Drop handling of TCP segmentation (because further segments were not handled properly
+# Show reassembled data instead (still does not show everything as some data from the frame is still not show)
+# Also extracts HTTP data
+#
+$in = $ARGV[ 0 ] || "c:\\wireshark.out";
+$log = "$in.log";
+$vox = "$in.ul";
+
+print "Processing $in\nLog is $log\n";
+
+open IN, $in or die "Cannot read $in: $^E";
+open LOG, ">$log" or die "Cannot write to0 $log: $^E";
+
+$SIG{INT} = sub {
+			print "SIGINT\n";
+			close OUT;
+			map
+			{
+			  ( $session, $ipsrc, $ipdst ) = split /,/;
+			  printf "Closing voxfile %s  (%d bytes)\n", $voxfiles{ $session }, $count{ $session };
+			  $voxhandle = $VOX{ $session };
+			  close $voxhandle;
+			} keys %voxfiles;
+		};
+
+$indata = 0;
+$inRTP = 0;
+$inRTSP = 0;
+$inSIP = 0;
+
+while (<IN>)
+{
+        if ( /(^[0-9a-fA-F]+)\s/ )
+        {
+		( $offset ) = m/^([0-9a-fA-F]+)\s/;
+                @fields = split /\s+/;
+                $off = shift @fields;
+                $decoffset = hex( $offset );
+		#print LOG "offset=$off $decoffset\n";
+		#print LOG;
+
+		if ( $indata )
+		{
+		    for ( $i = 16; $i  && $bytes ; $i--, $bytes--, $decoffset++ )
+		    {
+			    $byte = shift @fields;
+			    $byte = hex( $byte );
+			    print LOG "\t" if $decoffset == 0;
+			    printf LOG "%c", $byte if $byte != 13;
+			    print LOG "\t" if $byte == 10;
+		    }
+		    #print LOG "\n";
+		    if ( $bytes == 0 )
+		    {
+			    #print LOG "\n=====================\n";
+			    $indata = 0;
+		    }
+		}
+		elsif ( $inRTP && $inseq )  # Delayed packets are ignored because we already remplaced them with filler bytes
+		{
+			$voxhandle = $VOX{ $session };
+			for ( $i = 16; $i  && $bytes ; $i--, $bytes--, $decoffset++ )
+			{
+			  $byte = shift @fields;
+			  #print LOG "$byte " if $decoffset >= 54;
+			  $byte = hex( $byte );
+			  printf $voxhandle "%c", $byte if $decoffset >= 54;
+			  $prevtime{ $session }++ if $decoffset >= 54;
+			  #printf LOG "Setting 1 prevtime{ $session }=%s\n", $prevtime{ $session };
+			  $count{ $session }++ if $decoffset >= 54;
+			}
+			#print LOG "\n" if $decoffset > 54;
+			if ( $bytes == 0 )
+			{
+			  #printf LOG "$session now has %d bytes\n", $count{ $session };
+				$inRTP = 0;
+			}
+		}
+		elsif ( $inSIP )
+		{
+			for ( $i = 16; $i  && $bytes ; $i--, $bytes--, $decoffset++ )
+			{
+			  $byte = shift @fields;
+			  $byte = hex( $byte );
+			  print LOG "\t" if $decoffset == 42; # or $byte == '\r';
+			  printf LOG "%c", $byte if $decoffset >= 42 && $byte != 13;
+			  print LOG "\t" if $decoffset >= 42 && $byte == 10;
+			}
+			#print LOG "\n" if $decoffset > 42;
+			if ( $bytes == 0 )
+			{
+			  print LOG "\n";
+			  $inSIP = 0;
+			}
+		}
+		elsif ( $inRTSP )
+		{
+			if ( $TCPsegbytes )
+			{
+			  print LOG $TCPseg;
+			  $TCPsegbytes = 0;
+			}
+			( $offset ) = m/^([0-9a-fA-F]+)\s/;
+			@fields = split /\s+/;
+			$off = shift @fields;
+			$decoffset = hex( $offset );
+			#print LOG "offset=$off $decoffset\n";
+			#print LOG;
+			for ( $i = 16; $i  && $bytes ; $i--, $bytes--, $decoffset++ )
+			{
+				$byte = shift @fields;
+				$byte = hex( $byte );
+				print LOG "\t" if $decoffset == 54; # or $byte == '\r';
+				printf LOG "%c", $byte if $decoffset >= 54 && $byte != 13;
+				print LOG "\t" if $decoffset >= 54 && $byte == 10;
+			}
+			#print LOG "\n" if $decoffset > 54;
+			if ( $bytes == 0 )
+			{
+				print LOG "\n";
+				$inRTSP = 0;
+			}
+		}
+		elsif ( $inTCPseg )
+		{
+			for ( $i = 16; $i  && $bytes ; $i--, $bytes--, $decoffset++ )
+			{
+				$byte = shift @fields;
+				$byte = hex( $byte );
+				$TCPseg .= "\t" if $decoffset == 54; # or $byte == '\r';
+				$TCPseg .= sprintf "%c", $byte if $decoffset >= 54 && $byte != 13;
+				$TCPseg .= "\t" if $decoffset >= 54 && $byte == 10;
+				$TCPsegbytes++ if $decoffset >= 54;
+			}
+			#print LOG "\n" if $decoffset > 54;
+			if ( $bytes == 0 )
+			{
+				$inTCPseg = 0;
+				print LOG "Captured $TCPsegbytes bytes\n$TCPseg\n";
+			}
+		}
+	}
+        elsif ( /^No.\s+Time/ )
+	{
+		print LOG "\n=================\n";
+	  	print LOG;
+		$_ = <IN>;
+		#    123 8.116834    10.11.8.162           10.11.8.193           RTP      Payload type=ITU-T G.711 PCMU, SSRC=437192866, Seq=2519, Time=669442051
+		#    216 10:18:50.357763 192.168.129.1         192.168.129.36        RTP      PT=ITU-T G.711 PCMU, SSRC=0x3B5567D9, Seq=31103, Time=842866979, Mark
+
+		# Check if dup packet
+		( $pkseq, $clock1, $rest ) = m/^\s+(\d+)\s+(\S+)\s+(.+)/;
+		if ( /TCP Out-Of-Order/ || /TCP Retransmission/ || /TCP Dup/ || /Duplicate/ || $rest eq $prevrest )
+		{
+			#print "Skipping $_";
+			while ( $_ = <IN> )
+			{
+				#print "Skipping $_";
+				last if /^No.\s+Time/;
+			}
+			$_ = <IN>;
+			$prevrest = $rest;
+		}
+		if ( /RTP .* PCMU/ )
+		{
+		  ( $clock, $ipsrc, $ipdst, $SSRC, $seq, $time ) = m/\s+\d+\s+(\S+)\s+(\S+)\s+(\S+)\s+.*SSRC=(.*),\s+Seq=(\d+),\s+Time=(\d+)/;
+		  $clock =~ s/://g;
+		  $rtpevent = "";
+		  $summaryline = $_;
+		  chomp $summaryline;
+		  #print LOG;
+		  #print LOG "$ipsrc, $ipdst, $SSRC, $seq, $time\n";
+		  $mark = /Mark/ ? 1 : 0;
+		}
+		#    269 16:21:03.856594 192.168.129.34        192.168.129.133       RTP EVENT Payload type=RTP Event, DTMF Zero 0
+		elsif ( /RTP EVENT/ )
+		{
+		  ( $ipsrc, $ipdst, $rtpevent ) = m/\s+\d+\s+\S+\s+(\S+)\s+(\S+)\s+.*RTP Event, (.*)$/;
+		  $summaryline = $_;
+		  chomp $summaryline;
+		  #print LOG;
+		  #print LOG "$ipsrc, $ipdst, $rtpevent\n";
+		}
+		elsif ( /TCP segment of a reassembled PDU/ )
+		{
+		  	print LOG $_;
+			#$inTCPseg = 1;
+			$TCPseg = "";
+			$TCPsegbytes = 0;
+		}
+		else
+		{
+		  print LOG;
+		}
+		$_ = <IN>;	# Skip blank line
+	}
+	#Frame 51: 66 bytes on wire (528 bits), 66 bytes captured (528 bits)
+	#Frame 51 (66 bytes on wire, 66 bytes captured)
+
+	elsif ( /^Frame .*\d+ bytes captured/ )
+        {
+                ( $frame, $bytes ) = m/Frame (\d+).* (\d+) bytes captured/;
+		#printf LOG "\nFrame $frame expecting $bytes data bytes\n";
+        }
+        elsif ( /^Reassembled TCP \(\d+ bytes\):/ )
+	{
+		print LOG;
+		$indata = 1;
+		( $bytes ) = m/\((\d+) bytes\):/;
+	}
+	elsif ( /^Real Time Streaming Protocol/ || /^Hypertext Transfer Protocol/ )
+	#elsif ( /^Real Time Streaming Protocol/ )
+	{
+		$inRTSP = 1;
+	}
+	elsif ( /^Session Initiation Protocol/ )
+	{
+		$inSIP = 1;
+	}
+        elsif ( /^Frame \(\d+ bytes\):/ )
+	{
+		$inRTSP = 0;
+	}
+        elsif ( /^Real-Time Transport Protocol/ )
+	{
+	  if ( $rtpevent eq "" )
+	  {
+		$inRTP = 1;
+		$inseq = 1;
+		print LOG "$summaryline (sport=$sport dport=$dport)\n";
+	  	$session = $ipsrc . "_" . $sport . "_" . $ipdst. "_" . $dport . "_" . $SSRC;
+		#print LOG "session=$session\n";
+		if ( not defined $starttime{ $session } )
+		{
+		  $starttime{ $session } = $time;
+		  $prevtime{ $session } = $time;
+		  #printf LOG "Setting 2 prevtime{ $session }=%s\n", $prevtime{ $session };
+		  $startseq{ $session } = $seq;
+		  $prevseq{ $session } = $seq;
+		  $fname = $clock . "_" . $ipsrc . "_" . $sport . "_" . $ipdst. "_" . $dport;
+		  $newvox = "$vox";
+		  $newvox =~ s/\.vox/_$fname.vox/;
+		  print "Opening1 $newvox\n";
+		  push @voxfiles, "$newvox,$ipsrc,$ipdst";
+		  $voxfiles{ $session } = $newvox;
+		  print LOG "Opening1 $newvox\n";
+		  ( $hh, $mm, $sec, $milli ) = ( $clock =~ m/(\d{2})(\d{2})(\d{2})\.(\d{3})/ );
+		  $wall = ( $hh * 3600 + $mm * 60 + $sec ) * 1000 + $milli;
+		  if ( ! defined $firstOpen )
+		  {
+			  $firstOpen = $wall;
+			  printf "Session $session\n";
+			  printf LOG "Session $session\n";
+		  }
+		  else
+		  {
+			  printf "Session $session\n";
+			  printf LOG "Session $session\n";
+			  $deltaOpen = $wall - $firstOpen;
+			  printf "Time since first open %d samples (%.3f secs)\n", $deltaOpen * 8, $deltaOpen / 1000;
+			  printf LOG "Time since first open %d samples (%.3f secs)\n", $deltaOpen * 8, $deltaOpen / 1000;
+		  }
+		  open $VOX{ $session }, ">$newvox" or die "Cannot write to $newvox: $^E";
+		}
+		else
+		{
+		  $deltaseq = $seq - $prevseq{ $session };
+		  $deltaseq = 1 if $deltaseq == -65535;		# 16-bit sequence number wrapped
+		  if ( $deltaseq <= 0 )
+		  {
+		    $inseq = 0;
+		    printf LOG "IGNORING delayed packet arriving out of sequence Seq=$seq, previous seq=%d (delta=%d) *****************\n\t%s\n",
+		    	$prevseq{ $session}, $deltaseq, $voxfiles{ $session };
+		  }
+		  else
+		  {
+		    $inseq = 1;
+		    if ( $deltaseq != 1 )
+		    {
+		      printf LOG "Missing1 sequence number Seq=$seq, previous seq=%d (delta=%d) *****************\n\t%s\n",
+			  $prevseq{ $session}, $deltaseq, $voxfiles{ $session };
+		    }
+		    $deltastarttime = $time - $starttime{ $session };
+		    $deltatime = $time - $prevtime{ $session };
+		    $deltatime = $time - $starttime{ $session };
+		    #if ($deltatime > 10000 )
+		    #{
+		    #	    printf LOG "time=$time, session=$session, starttime{$session}=%s, prevtime{$session}=%s\n", $starttime{$session}, $prevtime{ $session };
+		    #	    #$deltatime=0; ######################################
+		    #}
+		    printf LOG "delta from start %d (%.3f secs) time=%s-%s=%d count=%d prevseq=%d\n",
+			  $deltastarttime, $deltastarttime / 8000, $time, $prevtime{ $session }, $time - $prevtime{ $session }, $count{ $session }, $prevseq{ $session };
+		    if ( $time != $prevtime{ $session } )
+		    {
+		      $fillcount = $deltatime > 0 ? $deltatime : 0;
+		      if ( $RTPeventCount{ $session } != 0 ) { $filler = 128; $fillerText = "DTMF"; }	# We had DTMF events
+		      elsif ( $deltaseq != 1 ) { $filler = 0x60; $fillerText = "Missing2 sequence number"; }		# Missing sequence numbers
+		      #else { $filler = 127; }					# Will insert silence (silence suppression occured)
+		      #if ( $filler == 127 )
+		      else {
+			#$filler = $fillcount > 1000 ? 0xb0 : 0x30;
+			$filler = $mark ? 0xb0 : 0x30;
+			$fillerText = $mark ? "Silence with mark" : "Silence without mark";
+		      }
+
+		      #printf LOG "time=$time, ending time of prev packet=%d = %d count=%d\n", $prevtime{ $session }, $time - $prevtime{ $session }, $count{ $session };
+		      printf LOG "Generating2 $deltatime samples with 0x%02X $fillerText (deltatime=$deltatime, deltaseq=$deltaseq, RTP Event count=%d duration=%d mark=$mark) file=%s\n",
+				  $filler, $RTPeventCount{ $session }, $RTPeventDuration{ $session }, $voxfiles{ $session };
+		      print LOG "************* deltatime != duration ***********\n" if ( ( $deltatime != $RTPeventDuration{ $session } ) && $RTPeventCount{ $session } );
+		      $prevtime{ $session } = $time;
+		      #printf LOG "Setting 3 prevtime{ $session }=%s\n", $prevtime{ $session };
+		      $voxhandle = $VOX{ $session };
+		      #printf "$frame $session $fillcount $filler (0x%02X)\n", $filler if $filler != 128;
+		      printf "$frame $session $fillcount $filler (0x%02X)=$fillerText\n", $filler;
+		      if ( $fillcount < 0 )
+		      {
+			print LOG "Error on $fillcount!!!!\n";
+			print "Error on $fillcount!!!!\n";
+			last;
+		      }
+		      if ( $filler == 128 )			# Fake DTMF with 1 KHz square wave (has 3 KHz harmonic)
+		      {
+			while ( $fillcount-- )
+			{
+			  $count{ $session }++;
+			  if ( ( $fillcount % 8 ) > 3 )
+			  {
+			    printf $voxhandle "%c", 0x20;
+			  }
+			  else
+			  {
+			    printf $voxhandle "%c", 0xa0;
+			  }
+			}
+		      }
+		      else
+		      {
+			while ( $fillcount-- ) { $count{ $session }++;  printf $voxhandle "%c", $filler; }
+		      }
+		    }
+		    $prevseq{ $session } = $seq;
+		    $prevtime{ $session } = $time;
+		    #printf LOG "Setting 4 prevtime{ $session }=%s\n", $prevtime{ $session };
+		  }
+	        }
+		$RTPeventCount{ $session } = 0;
+		$RTPeventDuration{ $session } = 0;
+	  }
+	  else	# We are in an RTP event packet, we must extract the 4-byte SSRC from the packet data at offset 0x32
+	  {
+		$SSRC = "0x";
+	    	while ( $_ = <IN> )
+		{
+		  next unless ( /^[0-9a-fA-F]+\s/ );
+		  ( $offset ) = m/^([0-9a-fA-F]+)\s/;
+		  @fields = split /\s+/;
+		  $off = shift @fields;
+		  $decoffset = hex( $offset );
+		  next if $decoffset < 32;
+		  if ( $decoffset == 32 )
+		  {
+		    while ( $decoffset < hex( "2C" )) { $decoffset++; shift @fields; }
+		    $seq = shift @fields;		# Offset 0x2C
+		    $seq .= shift @fields;		# Offset 0x2D
+		    $seq = hex( $seq );
+		    $time = shift @fields;		# Offset 0x2E
+		    $time .= shift @fields;		# Offset 0x2F
+		  }
+		  elsif ( $decoffset == 48 )
+		  {
+		    $time .= shift @fields;	# Offset 0x30
+		    $time .= shift @fields;	# Offset 0x31
+		    $time = hex( $time );
+		    $time = - $time if $time < 0;
+		    $SSRC .= uc( shift @fields ); #extract byte at 0x32;
+		    $SSRC .= uc( shift @fields ); #extract byte at 0x33;
+		    $SSRC .= uc( shift @fields ); #extract byte at 0x34;
+		    $SSRC .= uc( shift @fields ); #extract byte at 0x35;
+		    $SSRC =~ s/0x[0]*/0x/; 		#Suppress leading 00's
+		    shift @fields; # skip byte at 0ffset 0x36
+		    shift @fields; # skip byte at 0ffset 0x37
+		    $duration = shift @fields;	# Offset 0x38
+		    $duration .= shift @fields;	# Offset 0x39
+		    $duration = hex( $duration );
+
+		    last;
+		  }
+		}
+		$session = $ipsrc . "_" . $sport . "_" . $ipdst. "_" . $dport . "_" . $SSRC;
+		$RTPeventDuration{ $session } = $duration;
+		print LOG "session=$session\n";
+		print LOG "$summaryline => SSRC=$SSRC, Seq=$seq, Time=$time (sport=$sport dport=$dport)\n";
+		if ( not defined $starttime{ $session } )
+		{
+		  $starttime{ $session } = $time;
+		  $prevtime{ $session } = $time;
+		  #printf LOG "Setting 5 prevtime{ $session }=%s\n", $prevtime{ $session };
+		  $startseq{ $session } = $seq;
+		  $prevseq{ $session } = $seq;
+		  $fname = $clock . "_" . $ipsrc . "_" . $sport . "_" . $ipdst. "_" . $dport;
+		  $newvox = "$vox";
+		  $newvox =~ s/\.vox/_$fname.vox/;
+		  printf "Session $session\n";
+		  printf LOG "Session $session\n";
+		  print "Opening2 $newvox\n";
+		  push @voxfiles, "$newvox,$ipsrc,$ipdst";
+		  $voxfiles{ $session } = $newvox;
+		  print LOG "Opening2 $newvox\n";
+		  open $VOX{ $session }, ">$newvox" or die "Cannot write to $newvox: $^E";
+		}
+		$deltastarttime = $time - $starttime{ $session };
+		printf LOG "delta from start %d (%.3f secs) time=%s-%s=%d count=%d event duration=%d\n",
+		    $deltastarttime, $deltastarttime / 8000, $time, $prevtime{ $session }, $time - $prevtime{ $session }, $count{ $session }, $duration;
+
+
+####
+#if 0
+		    if ( $time != $prevtime{ $session } )
+		    {
+		      $fillcount = $deltatime > 0 ? $deltatime : 0;
+		      if ( $RTPeventCount{ $session } != 0 ) { $filler = 128; $fillerText = "DTMF"; }	# We had DTMF events
+		      elsif ( $deltaseq != 1 ) { $filler = 0x60; $fillerText = "Missing3 sequence number"; }		# Missing sequence numbers
+		      #else { $filler = 127; }					# Will insert silence (silence suppression occured)
+		      #if ( $filler == 127 )
+		      else {
+			#$filler = $fillcount > 1000 ? 0xb0 : 0x30;
+			$filler = $mark ? 0xb0 : 0x30;
+			$fillerText = $mark ? "Silence with mark" : "Silence without mark";
+		      }
+
+		      #printf LOG "time=$time, ending time of prev packet=%d = %d count=%d\n", $prevtime{ $session }, $time - $prevtime{ $session }, $count{ $session };
+		      printf LOG "Generating1 $deltatime samples with 0x%02X $fillerText (deltatime=$deltatime, deltaseq=$deltaseq, RTP Event count=%d duration=%d mark=$mark) file=%s\n",
+				  $filler, $RTPeventCount{ $session }, $RTPeventDuration{ $session }, $voxfiles{ $session };
+		      print LOG "************* deltatime != duration ***********\n" if ( ( $deltatime != $RTPeventDuration{ $session } ) && $RTPeventCount{ $session } );
+		      $prevtime{ $session } = $time;
+		      #printf LOG "Setting 3 prevtime{ $session }=%s\n", $prevtime{ $session };
+		      $voxhandle = $VOX{ $session };
+		      #printf "$frame $session $fillcount $filler (0x%02X)\n", $filler if $filler != 128;
+		      printf "$frame $session $fillcount $filler (0x%02X)=$fillerText\n", $filler;
+		      if ( $fillcount < 0 )
+		      {
+			print LOG "Error on $fillcount!!!!\n";
+			print "Error on $fillcount!!!!\n";
+			last;
+		      }
+		      if ( $filler == 128 )			# Fake DTMF with 1 KHz square wave (has 3 KHz harmonic)
+		      {
+			while ( $fillcount-- )
+			{
+			  $count{ $session }++;
+			  if ( ( $fillcount % 8 ) > 3 )
+			  {
+			    printf $voxhandle "%c", 0x20;
+			  }
+			  else
+			  {
+			    printf $voxhandle "%c", 0xa0;
+			  }
+			}
+		      }
+		      else
+		      {
+			while ( $fillcount-- ) { $count{ $session }++;  printf $voxhandle "%c", $filler; }
+		      }
+		    }
+####
+#endif
+		$prevseq{ $session } = $seq;
+		$prevtime{ $session } = $time;
+		#printf LOG "Setting 6 prevtime{ $session }=%s\n", $prevtime{ $session };
+
+		$RTPeventCount{ $session }++;
+	      }
+	}
+	#User Datagram Protocol, Src Port: 7776 (7776), Dst Port: 22706 (22706)
+        elsif ( /^User Datagram Protocol/ )
+	{
+		#( $sport, $dport ) = /Src Port: (\d+)\s.*Dst Port: (\d+)\s+/;
+		( $sport, $dport ) = /Src Port: \S+\s\((\d+)\).*Dst Port: \S+\s\((\d+)\)+/;
+		#print LOG "$_$sport $dport\n";
+	}
+	#elsif ( /^RFC 2833 RTP Event/ )
+	#{
+	#	$inRTP = 0;
+	#	$RTPeventCount{ $session }++;
+	#}
+	else
+        {
+                #print LOG;
+        }
+}
+
+close in;
+close LOG;
+
+map
+{
+  ( $session, $ipsrc, $ipdst ) = split /,/;
+  #printf "Closing voxfile for session $session (%d bytes)\n", $count{ $session };
+  printf "Closing voxfile %s  (%d bytes)\n", $voxfiles{ $session }, $count{ $session };
+  $voxhandle = $VOX{ $session };
+  close $voxhandle;
+#} @voxfiles;
+} keys %voxfiles;
+

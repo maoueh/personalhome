@@ -1,0 +1,123 @@
+#!/usr/bin/env ruby
+
+##
+# You will need `Wireshark` and it's installation path should be added
+# to PATH so `tshark` is available from command line to call.
+#
+# Moreover, `sox` is needed also to convert from `ulaw` to `wav`. It needs
+# to be available from command line.
+#
+# This script assumes only one stream is present in pcap.
+#
+
+def main(arguments)
+  if arguments.length < 1
+     usage()
+     exit(1)
+  end
+
+  if arguments.include?("-h") || arguments.include?("--help")
+    usage()
+    exit(0)
+  end
+
+  arguments.each do |pcap|
+    call_id = /(.*)\.pcap/.match(pcap)[1]
+
+    `tshark -r #{pcap} -Px > #{call_id}.txt`
+    extract_rtp_data("#{call_id}.txt", "#{call_id}.ul")
+    `sox -c 1 -r 8000 #{call_id}.ul #{call_id}.wav`
+
+    File.delete("#{call_id}.ul", "#{call_id}.txt")
+  end
+end
+
+def extract_rtp_data(input_file, output_file)
+  in_rtp = false
+  processed_rtp = false
+
+  File.open(output_file, 'wb') do |output|
+    File.foreach(input_file) do |line|
+      if summary = summary_line?(line)
+        in_rtp = summary[:type] == 'RTP'
+        next
+      end
+
+      if (data = data_line?(line)) && in_rtp
+        write_rtp_data(data, output)
+
+        processed_rtp = true
+      end
+    end
+  end
+
+  puts "No RTP data in '#{input_file}', did not extract anything" if !processed_rtp
+end
+
+def summary_line?(line)
+  # Index Time IP_From -> IP_To Packet_Type Packet_Length Packet_Details
+  if match = /(.*)\s+(.*) ([\d:\.]+) -> ([\d:\.]+) ([^\s]+) (\d+) (.*)/.match(line)
+    index, time, from, to, type, length, details = match.captures
+
+    {
+      :index => index.strip.to_i,
+      :time => time.strip.to_f,
+      :from => from.strip,
+      :to => to.strip,
+      :type => type.strip,
+      :length => length.strip.to_i,
+      :details => details.strip,
+    }
+  end
+end
+
+def data_line?(line)
+  if match = /([a-fA-F0-9]+)\s+([a-fA-F0-9 ]+)\s+(.*)/.match(line)
+    offset, buffer, text = match.captures
+
+    {
+      :offset => offset.strip.to_i(16),
+      :buffer => [buffer.gsub(' ', '')].pack('H*'),
+      :text => text.strip
+    }
+  end
+end
+
+def write_rtp_data(data, output)
+  # We need to skip RTP packet header. Payload starts at offset
+  # 0x36 (54). Hence, everything before this offset needs to be skim
+  # out from the output. Each data line buffer contains 16 bytes, hence,
+  # we have the following scheme to remove RPT header from buffer:
+  #  1. If offset is <= 32, write nothing.
+  #  2. If offset is == 48, write from byte 54 to 63 (so drop first 6 bytes).
+  #  3. Otherwise, write full 16 bytes.
+
+  case
+  when data[:offset] <= 32
+    return
+  when data[:offset] == 48
+    output.write(data[:buffer].unpack('C*').drop(6).pack('C*'))
+  else
+    output.write(data[:buffer])
+  end
+end
+
+def usage()
+  puts "pcap2wav <pcap> [<pcap> ...]"
+  puts ""
+  puts "For each pcap filename passed, invoke tshark (Wireshark command line utility)"
+  puts "to extract packet dissection as raw text, invoke on raw packet dissection as"
+  puts "text the txt2ulaw script to extract audio stream (pcap is assumed to have only"
+  puts "one stream) and finally convert stream to wav using sox."
+  puts ""
+  puts "Dependencies"
+  puts ""
+  puts "You will need `Wireshark` and its installation path should be added"
+  puts "to $PATH so `tshark` command line utility can be called by this script."
+  puts "Moreover, `sox` command line utility also required to convert RPT stream"
+  puts "to `wav`, hence it needs to be callable from this script."
+  puts ""
+  puts "This script assumes only one stream is present in pcap."
+end
+
+main(ARGV)

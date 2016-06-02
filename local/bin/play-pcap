@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+def main(arguments)
+  if arguments.length < 2
+     usage()
+     exit(1)
+  end
+
+  if arguments.include?("-h") || arguments.include?("--help")
+    usage()
+    exit(0)
+  end
+
+  host = arguments[0]
+  id = arguments[1]
+  date = arguments[2] || Time.now.strftime("%Y%m%d")
+  hour = arguments[3] || Time.now.strftime("%H")
+
+  download_pcap_path = normalize_path(`which download-pcap`)
+  pcap2wav_path = normalize_path(`which pcap2wav`)
+
+  `ruby #{download_pcap_path} #{host} #{id} #{date} #{hour}`
+  `ruby #{pcap2wav_path} "#{id}.pcap"`
+  `play "#{id}.wav"`
+end
+
+def normalize_path(path)
+  # TODO: Only execute on Windows
+  `cygpath -w #{path}`.strip.chomp
+end
+
+def usage()
+  puts "play-pcap <host> <callid> [<date (yyyymmdd)> <hour (hh)>]"
+end
+
+main(ARGV)

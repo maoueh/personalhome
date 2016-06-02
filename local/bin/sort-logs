@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-TIMESTAMP_REGEX = /\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}-\d{4})\]/
+TIMESTAMP_REGEX = /\[(\d{4}-\d{2}-\d{2}.*)\]/
 
 def main(arguments)
   log_lines = []
@@ -8,7 +8,7 @@ def main(arguments)
     puts argument
     log_lines += fetch_lines(argument)
   end
-  
+
   log_lines = log_lines.sort!().each do |log_line|
     puts log_line[1]
   end
@@ -19,27 +19,27 @@ def fetch_lines(file)
   File.open(file).each do |line|
     lines << line
   end
-  
+
   extract_log_lines(lines)
 end
 
 def extract_log_lines(lines)
   return [] if lines.empty?
-  
+
   lines = lines.drop_while { |line| !timestampted_line?(line) }
-  
+
   accumulation = []
   results = []
-  
+
   lines.each do |line|
     if timestampted_line?(line)
       results << create_log_line(accumulation) if !accumulation.empty?
       accumulation = []
     end
-     
+
     accumulation << line
   end
-  
+
   results << create_log_line(accumulation)
   results
 end
@@ -47,7 +47,7 @@ end
 def create_log_line(lines)
   timestamp = TIMESTAMP_REGEX.match(lines[0])[1]
   log_line = lines.join("")
-  
+
   [timestamp, log_line]
 end
 

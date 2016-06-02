@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+LEFT="$(printf $1 | tr '.' '-')"
+RIGHT="$(printf $2 | tr '.' '-')"
+
+REMOTE="origin"
+BRANCH_LEFT="$LEFT-stable"
+BRANCH_RIGHT="$RIGHT-stable"
+
+show_diff() {
+  git diff $REMOTE/$BRANCH_LEFT:$1 $REMOTE/$BRANCH_RIGHT:$1
+}
+
+show_diff "config/gitlab.yml.example"
+show_diff "config/resque.yml.example"
+show_diff "config/unicorn.rb.example"
+
+show_diff "config/database.yml.mysql"
+show_diff "config/database.yml.postgresql"
+
+show_diff "lib/support/init.d/gitlab"
+show_diff "lib/support/init.d/gitlab.default.example"
+
+show_diff "lib/support/logrotate/gitlab"
+
+show_diff "lib/support/nginx/gitlab"
+show_diff "lib/support/nginx/gitlab-ssl"

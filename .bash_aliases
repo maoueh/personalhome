@@ -26,4 +26,7 @@ alias dir='ls -hF --format=vertical --color=tty --ignore="\$Recycle.Bin" --ignor
 alias vdir='ls -hF --format=long --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
 alias ll='ls -lhF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
 alias la='ls -AhF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
-alias lc='ls -ChF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'                              
+alias lc='ls -ChF --color=tty --ignore="\$Recycle.Bin" --ignore="\$RECYCLE.BIN" --ignore="System Volume Information" --ignore="ntuser*" --ignore="NTUSER*"'
+
+# Bundler development version shortcut
+alias dbundle='ruby -I /work/bundler/bundler/lib /work/bundler/bundler/exe/bundle'

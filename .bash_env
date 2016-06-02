@@ -1,5 +1,5 @@
 # User System
-export MSYSTEM=${MSYSTEM:="MINGW32"}
+export MSYSTEM=${MSYSTEM:="MSYS"}
 
 # User Colors
 export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:';
@@ -12,64 +12,81 @@ export EDITOR=${EDITOR:="notepad++"}
 
 # User Programs
 export ANT_ROOT=${ANT_ROOT:="/c/Local/Ant"}
+export ATOM_ROOT=${ATOM_ROOT:="/c/Users/movachon/AppData/Local/atom"}
 export BUCKMINSTER_ROOT=${BUCKMINSTER_ROOT:="/c/Local/Buckminster"}
+export CHEFDK_ROOT=${CHEFDK_ROOT:="/c/Local/ChefDK/0.14.25"}
 export COMPOSER_ROOT=${COMPOSER_ROOT:="/c/Local/Composer"}
 export DEPOT_TOOLS_ROOT=${DEPOT_TOOLS_ROOT:="/c/Local/DepotTools"}
 export ERLANG_ROOT=${ERLANG_ROOT:="/c/Local/Erlang/17.4"}
-export GEM_ROOT=${GEM_ROOT:="/c/Users/movachon/.gem/ruby/2.0.0"}
-export GIT_ROOT=${GIT_ROOT:="/c/Local/Git/1.9.5"}
-export GRADLE_ROOT=${GRADLE_ROOT:="/c/Local/Gradle/2.2"}
+export GEM_ROOT=${GEM_ROOT:="/c/Users/movachon/.gem/ruby/2.1.0"}
+export GRADLE_ROOT=${GRADLE_ROOT:="/c/Local/Gradle/2.10"}
 export GROOVY_ROOT=${GROOVY_ROOT:="/c/Local/Groovy/2.3.7"}
 export GRAPHVIZ_ROOT=${GRAPHVIZ_ROOT:="/c/Local/Graphviz/2.36"}
-export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/1.7.0.72"}
+export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/1.8.0.25"}
+export JETTY_ROOT=${JETTY_ROOT:="/c/Local/Jetty"}
 export LATEX_ROOT=${LATEX_ROOT:="/c/Local/Miktek/miktex"}
 export MAVEN_ROOT=${MAVEN_ROOT:="/c/Local/Maven/3.2.3"}
+export MSYSTEM_ROOT=${MSYSTEM_ROOT:="/usr"}
+export MYSQL_ROOT=${MYSQL_ROOT:="/c/Local/MySQL/5.5.46"}
 export NGINX_ROOT=${NGINX_ROOT:="/c/Local/Nginx/1.3.15"}
-export NODE_ROOT=${NODE_ROOT:="/c/Local/Node/0.12.2"}
-export NPM_ROOT=${NPM_ROOT:="${HOME}/.npm"}
+export NGROK_ROOT=${NGROK_ROOT:="/c/Local/Ngrok/2.0.19"}
+export NODE_ROOT=${NODE_ROOT:="/c/Local/Node/5.4.1"}
 export NOTEPADPP_ROOT=${NOTEPADPP_ROOT:="/c/Users/Public/Notepad++"}
+export NPM_ROOT=${NPM_ROOT:="${HOME}/.npm"}
 export PACKER_ROOT=${PACKER_ROOT:="/c/Local/Packer/0.6.0"}
 export PANDOC_ROOT=${PANDOC_ROOT:="/c/Local/Pandoc"}
 export PHANTOMJS_ROOT=${PHANTOMJS_ROOT:="/c/Local/PhantomJS/1.9.7"}
 export PHP_ROOT=${PHP_ROOT:="/c/Local/Php/5.3.28"}
 export PREMAKE_ROOT=${PREMAKE_ROOT:="/c/Local/Premake/4.3"}
 export PYTHON_ROOT=${PYTHON_ROOT:="/c/Local/Python/2.7.3"}
-export RUBY_ROOT=${RUBY_ROOT:="/c/Local/Ruby/2.0.0"}
+export RUBY_ROOT=${RUBY_ROOT:="/c/Local/Ruby/2.1.7"}
 export SOX_ROOT=${SOX_ROOT:="/c/Local/Sox"}
-export TOOLCHAIN_ROOT=${TOOLCHAIN_ROOT:="/usr"}
 export TOMCAT_ROOT=${TOMCAT_ROOT:="/c/Local/Tomcat"}
-export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.6.5"}
+export TORTOISE_MERGE=${TORTOISE_MERGE:="/c/Program Files/TortoiseSVN"}
+export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.8.1"}
 export VIRTUAL_BOX_ROOT=${VIRTUAL_BOX_ROOT:="/c/Program Files/Oracle/VirtualBox"}
+export WIRESHARK_ROOT=${WIRESHARK_ROOT:="/c/Program Files/Wireshark"}
 
 # User SYSTEM_PATH
 export SYSTEM_PATH=${SYSTEM_PATH:="${PATH}"}
 
 # User PREPEND_PATH
-PREPEND_PATH="./bin:${HOME}/local/bin"
-PREPEND_PATH+=":$ANT_ROOT/bin:$BUCKMINSTER_ROOT:$COMPOSER_ROOT:$DEPOT_TOOLS_ROOT"
-PREPEND_PATH+=":$ERLANG_ROOT/bin:$GEM_ROOT/bin:$GRADLE_ROOT/bin:$GROOVY_ROOT/bin"
-PREPEND_PATH+=":$GRAPHVIZ_ROOT/bin:$JAVA_ROOT/bin:$LATEX_ROOT/bin:$MAVEN_ROOT/bin"
-PREPEND_PATH+=":$NGINX_ROOT:$NOTEPADPP_ROOT:$NODE_ROOT:$NPM_ROOT"
-PREPEND_PATH+=":$PACKER_ROOT:$PANDOC_ROOT:$PHANTOMJS_ROOT:$PHP_ROOT:$PREMAKE_ROOT"
-PREPEND_PATH+=":$RUBY_ROOT/bin:$SOX_ROOT:$TOOLCHAIN_ROOT/bin:$TOMCAT_ROOT/bin"
-PREPEND_PATH+=":$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT"
-
-# User APPEND_PATH
-APPEND_PATH="$GIT_ROOT/cmd"
+PREPEND_PATH="./bin:${HOME}/local/bin:/usr/local/bin:${MSYSTEM_ROOT}/bin:/usr/bin:/mingw64/bin"
+PREPEND_PATH+=":$ANT_ROOT/bin:$ATOM_ROOT/bin:$BUCKMINSTER_ROOT:$COMPOSER_ROOT:$CHEFDK_ROOT/bin"
+PREPEND_PATH+=":$DEPOT_TOOLS_ROOT:$ERLANG_ROOT/bin:$GEM_ROOT/bin:$GRADLE_ROOT/bin"
+PREPEND_PATH+=":$GROOVY_ROOT/bin:$GRAPHVIZ_ROOT/bin:$JAVA_ROOT/bin:$LATEX_ROOT/bin"
+PREPEND_PATH+=":$MAVEN_ROOT/bin:$MYSQL_ROOT/bin:$NGINX_ROOT:$NGROK_ROOT:$NOTEPADPP_ROOT"
+PREPEND_PATH+=":$NPM_ROOT:$NODE_ROOT:$PACKER_ROOT:$PANDOC_ROOT:$PHANTOMJS_ROOT:$PHP_ROOT"
+PREPEND_PATH+=":$PREMAKE_ROOT:$RUBY_ROOT/bin:$SOX_ROOT:$TORTOISE_MERGE/bin:$TOMCAT_ROOT/bin"
+PREPEND_PATH+=":$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT:$WIRESHARK_ROOT"
 
 # User PATH
 export PATH="${PREPEND_PATH}:${SYSTEM_PATH}:${APPEND_PATH}"
 
 # User Programs env
-export INFOPATH="${HOME}/local/info:${TOOLCHAIN_ROOT}/info:${INFOPATH}"
+export INFOPATH="${HOME}/local/info:${MSYSTEM_ROOT}/info:${INFOPATH}"
 export JAVA_HOME="${JAVA_ROOT}"
-export MANPATH="${HOME}/local/man:${TOOLCHAIN_ROOT}/share/man:${MANPATH}"
+export MANPATH="${HOME}/local/man:${MSYSTEM_ROOT}/share/man:${MANPATH}"
 export NODE_PATH="`cygpath -wa ${NPM_ROOT}/node_modules`"
-export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${TOOLCHAIN_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${MSYSTEM_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 # User Trusted Certificates
 export SSL_CERT_FILE=${SSL_CERT_FILE:="/usr/ssl/cert.pem"}
 export SSL_CERT_DIR=${SSL_CERT_DIR:="/usr/ssl/certs"}
 
+# Java
+export JDK6_HOME="`cygpath -wa /c/Local/Java/1.6.0.45`"
+export JDK7_HOME="`cygpath -wa /c/Local/Java/1.7.0.72`"
+export JDK8_HOME="`cygpath -wa /c/Local/Java/1.8.0.25`"
+
+# Jetty
+export JETTY_VERSION=${JETTY_VERSION:="9.3.6"}
+export JETTY_RUNNER="${JETTY_ROOT}/jetty-runner-${JETTY_VERSION}.jar"
+
 # Vagrant
 export VAGRANT_DETECTED_OS="cygwin"
+
+# Customize .bash_env further without having to commit it
+#if [ -f ~/.bash_env.user ]; then
+#  source ~/.bash_env.user
+#fi

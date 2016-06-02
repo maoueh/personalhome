@@ -1,11 +1,11 @@
 # a) function settitle
-# settitle () 
-# { 
-#   echo -ne "\e]2;$@\a\e]1;$@\a"; 
+# settitle ()
+# {
+#   echo -ne "\e]2;$@\a\e]1;$@\a";
 # }
-# 
+#
 # b) function cd_func
-# This function defines a 'cd' replacement function capable of keeping, 
+# This function defines a 'cd' replacement function capable of keeping,
 # displaying and accessing history of visited directories, up to 10 entries.
 # To use it, uncomment it, source this file and try 'cd --'.
 # acd_func 1.0.5, 10-nov-2004
@@ -46,7 +46,7 @@ cd_func ()
   #
   # Trim down everything beyond 11th entry
   popd -n +11 2>/dev/null 1>/dev/null
- 
+
    #
    # Remove any other occurence of this dir, skipping the top of the stack
    for ((cnt=1; cnt <= 10; cnt++)); do
@@ -58,10 +58,10 @@ cd_func ()
        cnt=cnt-1
      fi
    done
- 
+
    return 0
 }
- 
+
 alias cd=cd_func
 
 ##
@@ -78,12 +78,15 @@ explorer() {
 
 ##
 # This function start a new bash with the correct path defined
-# for the specified toolchain passed in argument effectively
+# for the specified msystem argument effectively
 # changing build environment. When no argument is passed,
 # it prints the current defined toolchain.
 #
 toolchain() {
   # TODO: transform to map
+  local mingw32_name=mingw32
+  local mingw32_path=/mingw32
+
   local mingw64_name=mingw64
   local mingw64_path=/mingw64
 
@@ -95,7 +98,10 @@ toolchain() {
 
   if [ $# -eq 0 ]
   then
-	case "$TOOLCHAIN_ROOT" in
+	case "$MSYSTEM_ROOT" in
+    $mingw32_path)
+	  echo "Current toolchain: ${mingw32_name}"
+	  ;;
 	$mingw64_path)
 	  echo "Current toolchain: ${mingw64_name}"
 	  ;;
@@ -111,18 +117,27 @@ toolchain() {
 	esac
   else
 	case "$1" in
+    $mingw32_name)
+	  echo "Activating toolchain '$1' (in new bash process)"
+	  CWD=`pwd` MSYSTEM="MINGW32" MSYSTEM_ROOT="${mingw32_path}" exec bash -l -i
+	  ;;
 	$mingw64_name)
 	  echo "Activating toolchain '$1' (in new bash process)"
-	  TOOLCHAIN_ROOT="${mingw64_path}" bash --login -i
+	  CWD=`pwd` MSYSTEM="MINGW64" MSYSTEM_ROOT="${mingw64_path}" exec bash -l -i
 	  ;;
 	$msys2_name)
 	  echo "Activating toolchain '$1' (in new bash process)"
-	  TOOLCHAIN_ROOT="${msys2_path}" bash --login -i
+	  CWD=`pwd` MSYSTEM="MSYS" MSYSTEM_ROOT="${msys2_path}" exec bash -l -i
 	  ;;
 	$rpi_name)
 	  echo "Activating toolchain '$1' (in new bash process)"
-	  TOOLCHAIN_ROOT="${rpi_path}" bash --login -i
+	  CWD=`pwd` MSYSTEM="MSYS" MSYSTEM_ROOT="${rpi_path}" exec bash --login -i
 	  ;;
+    list)
+      echo "$mingw32_name"
+      echo "$mingw64_name"
+      echo "$msys2_name"
+      echo "$rpi_name"
 	esac
   fi
 }

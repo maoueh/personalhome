@@ -18,6 +18,23 @@ endif
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" Initialize Vundle (being)
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" Load Vundle plugin
+Plugin 'VundleVim/Vundle.vim'
+
+" Load other plugins
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-easytags'
+Plugin 'bling/vim-airline'
+
+call vundle#end()
+filetype plugin indent on
+" Finalize Vundle (end)
+
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -43,7 +60,7 @@ inoremap <C-U> <C-G>u<C-U>
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
-  set mouse=a
+  " set mouse=a
 endif
 
 " Switch syntax highlighting on, when the terminal has colors
