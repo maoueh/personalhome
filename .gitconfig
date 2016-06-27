@@ -1,0 +1,24 @@
+[user]
+	name = Matthieu Vachon
+	email = mvachon@samsaodev.com
+[core]
+	excludesfile = ~/.gitignoreglobal
+  eol = lf
+	autocrlf = false
+	editor = vim
+[merge]
+	renormalize = true
+[rerere]
+	enabled = 1
+[push]
+	default = simple
+[help]
+	autocorrect = 1
+[color]
+	ui = always
+  branch = always
+  diff = always
+  interactive = always
+  status = always
+[gui]
+	encoding = utf-8

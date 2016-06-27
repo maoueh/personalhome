@@ -21,9 +21,8 @@ alias egrep='egrep --color=auto'              # show differences in colour
 alias fgrep='fgrep --color=auto'              # show differences in colour
 
 # Some shortcuts for different directory listings
-alias ls='ls -hF --color=tty --ignore="ntuser*" --ignore="NTUSER*"'
-alias dir='ls --color=auto --format=vertical'
-alias vdir='ls --color=auto --format=long'
-alias ll='ls -l'                              # long list
-alias la='ls -A'                              # all but . and ..
-alias l='ls -CF'                              #
+alias ls='ls -hFG'
+alias dir='ls -hFG --format=vertical'
+alias vdir='ls -hFG --format=long'
+alias ll='ls -lhFG'                              # long list
+alias la='ls -AhFG'                              # all but . and ..
