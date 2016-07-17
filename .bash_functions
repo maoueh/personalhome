@@ -65,6 +65,53 @@ cd_func ()
 alias cd=cd_func
 
 ##
+# Specialized mkdir that changes to created directory when
+# -c parameter is used
+#
+mkdir_cd() {
+	if [ $# == 0 ]; then 
+		mkdir
+		return $?
+	fi
+
+	local last_argument=""
+	local has_cd_argument=false
+	local filtered_arguments=""
+	
+	for argument in "$@"; do
+		if [ "$argument" == "-c" ]; then
+			has_cd_argument=true
+		else
+			if [ "$filtered_arguments" != "" ]; then filtered_arguments+=" "; fi
+		
+			filtered_arguments+="$argument"
+		fi
+		
+		last_argument="$argument"
+	done
+	
+	# Peform the actual mkdir command with -c filtered out
+	mkdir $filtered_arguments
+	
+	# Cache exit code, check if command fails and return if its the case
+	local exit_code=$?
+	if [ $exit_code != 0 ]; then
+		return $exit_code
+	fi
+	
+	# Check if -c is set and last argument can be navigated to, 
+	# navigate to it if constaints are satisfied
+	if [[ $has_cd_argument == true && $last_argument != "" && $last_argument != "-c" ]]; then 
+		cd $last_argument
+		return $?
+	fi
+
+	return 0
+}
+
+alias mkdir=mkdir_cd
+
+##
 # Calls system editor defined by "$EDITOR" that you
 # put in your `.bash_env` file.
 #
@@ -122,16 +169,16 @@ toolchain() {
   else
 	case "$1" in
 	$mingw64_name)
-	  echo "Activating toolchain '$1' (in new bash process)"
-	  TOOLCHAIN_ROOT="${mingw64_path}" bash --login -i
+	  echo "Activating toolchain '$1' (reloading bash process)"
+	  CWD=`pwd` TOOLCHAIN_ROOT="${mingw64_path}" exec bash -l -i
 	  ;;
 	$msys2_name)
-	  echo "Activating toolchain '$1' (in new bash process)"
-	  TOOLCHAIN_ROOT="${msys2_path}" bash --login -i
+	  echo "Activating toolchain '$1' (reloading bash process)"
+	  CWD=`pwd` TOOLCHAIN_ROOT="${msys2_path}" exec bash -l -i
 	  ;;
 	$rpi_name)
-	  echo "Activating toolchain '$1' (in new bash process)"
-	  TOOLCHAIN_ROOT="${rpi_path}" bash --login -i
+	  echo "Activating toolchain '$1' (reloading bash process)"
+	  CWD=`pwd` TOOLCHAIN_ROOT="${rpi_path}" exec bash -l -i
 	  ;;
 	esac
   fi

@@ -12,25 +12,27 @@ export EDITOR=${EDITOR:="notepad++"}
 
 # User Programs
 export ANT_ROOT=${ANT_ROOT:="/c/Local/Ant/1.9.4"}
-export CHEFDK_ROOT=${CHEFDK_ROOT:="/c/Local/ChefDK/0.4.0"}
+export ATOM_ROOT=${ANT_ROOT:="/c/Users/Matt/AppData/Local/atom"}
+export CHEFDK_ROOT=${CHEFDK_ROOT:="/c/Local/ChefDK/0.11.2"}
 export COMPOSER_ROOT=${COMPOSER_ROOT:="/c/Local/Composer"}
+export DOCKER_ROOT=${DOCKER_ROOT:="/c/Local/Docker/Toolbox/1.11.1"}
 export ERLANG_ROOT=${ERLANG_ROOT:="/c/Local/Erlang/17.4"}
+export GITFLOW_ROOT=${GITFLOW_ROOT:="/c/Local/GitFlow/1.x"}
 export GRADLE_ROOT=${GRADLE_ROOT:="/c/Local/Gradle/2.3"}
-export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/1.7.0_65"}
+export JAVA_ROOT=${JAVA_ROOT:="/c/Local/Java/1.8.0_11"}
 export MAVEN_ROOT=${MAVEN_ROOT:="/c/Local/Maven/3.1.0"}
 export MYSQL_ROOT=${MYSQL_ROOT:="/c/Local/Mysql/5.6.17"}
-export NPM_ROOT=${NPM_ROOT:="${HOME}/.npm"}
-export NODE_ROOT=${NODE_ROOT:="/c/Local/Node/0.12.2"}
-export NOTEPADPP_ROOT=${NOTEPADPP_ROOT:="/c/Program Files (x86)/Notepad++"}
+export NODE_ROOT=${NODE_ROOT:="/c/Local/Node/5.9.0"}
+export NOTEPADPP_ROOT=${NOTEPADPP_ROOT:="/c/Local/Notepad++"}
 export PHP_ROOT=${PHP_ROOT:="/c/Local/Php/5.6.5"}
 export PYTHON_ROOT=${PYTHON_ROOT:="/c/Local/Python/2.7.6"}
 export REBAR_ROOT=${REBAR_ROOT:="/c/Local/Rebar"}
-export RUBY_ROOT=${RUBY_ROOT:="/c/Local/Ruby/2.0.0"}
+export RUBY_ROOT=${RUBY_ROOT:="/c/Local/Ruby/2.2.3"}
 export RVM_ROOT=${RVM_ROOT:="$HOME/.rvm"}
 export SVN_ROOT=${SVN_ROOT:="/c/Program Files/TortoiseSVN"}
 export SYMFONY_ROOT=${SYMFONY_ROOT:="/c/Local/Symfony"}
 export TOOLCHAIN_ROOT=${TOOLCHAIN_ROOT:="/usr"}
-export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.7.4"}
+export VAGRANT_ROOT=${VAGRANT_ROOT:="/c/Local/Vagrant/1.8.1"}
 export VIRTUAL_BOX_ROOT=${VIRTUAL_BOX_ROOT:="/c/Local/VirtualBox"}
 
 # User SYSTEM_PATH
@@ -39,9 +41,9 @@ export SYSTEM_PATH=${SYSTEM_PATH:="${MSYS2_PATH}:/mingw64/bin:/opt/bin:${PATH}"}
 # User PREPEND_PATH
 PREPEND_PATH="./bin:${HOME}/local/bin"
 PREPEND_PATH+=":$CHEFDK_ROOT/bin"
-PREPEND_PATH+=":$ANT_ROOT/bin:$COMPOSER_ROOT:$ERLANG_ROOT/bin"
-PREPEND_PATH+=":$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$MAVEN_ROOT/bin"
-PREPEND_PATH+=":$NPM_ROOT:$NODE_ROOT:$MYSQL_ROOT/bin"
+PREPEND_PATH+=":$ANT_ROOT/bin:$COMPOSER_ROOT:$DOCKER_ROOT:$ERLANG_ROOT/bin"
+PREPEND_PATH+=":$GITFLOW_ROOT:$GRADLE_ROOT/bin:$JAVA_ROOT/bin:$MAVEN_ROOT/bin"
+PREPEND_PATH+=":$NODE_ROOT:$MYSQL_ROOT/bin"
 PREPEND_PATH+=":$NOTEPADPP_ROOT:$PHP_ROOT:$PYTHON_ROOT:$PYTHON_ROOT/Scripts"
 PREPEND_PATH+=":$REBAR_ROOT:$RUBY_ROOT/bin:$SVN_ROOT/bin:$SYMFONY_ROOT"
 PREPEND_PATH+=":$VAGRANT_ROOT/bin:$VIRTUAL_BOX_ROOT"
@@ -56,17 +58,39 @@ export INFOPATH="${HOME}/local/info:${TOOLCHAIN_ROOT}/info:${INFOPATH}"
 export MANPATH="${HOME}/local/man:${TOOLCHAIN_ROOT}/share/man:${MANPATH}"
 export PKG_CONFIG_PATH="${HOME}/local/lib/pkgconfig:${TOOLCHAIN_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
-# Java
+# Dynamic Environment
+
+EXTRA_PATH=""
+
+## Git Flow
+source "${GITFLOW_ROOT}/git-flow-completion/git-flow-completion.bash"
+
+## Gradle
+export GRADLE_USER_HOME="${HOME}/.gradle"
+
+## Java
 export JAVA_HOME="${JAVA_ROOT}"
 
-# Node
-export NODE_PATH="`cygpath -wa ${NPM_ROOT}/node_modules`"
+export JAVA8_HOME="/c/Local/Java/1.8.0_11"
+export JDK8_HOME="/c/Local/Java/1.8.0_11"
 
-# Ruby
-if which ruby >/dev/null && which gem >/dev/null; then
-  export GEM_ROOT="`cygpath -wa $(ruby -rubygems -e 'puts Gem.user_dir')`"
-  export PATH="${PREPEND_PATH}:${GEM_ROOT}\bin:${SYSTEM_PATH}"
+## Node
+if which npm >/dev/null; then  
+  export NODE_VERSION="`node.exe -v | sed 's/^v//'`"
+  export NPM_ROOT=${NPM_ROOT:="${HOME}/.npm/${NODE_VERSION}"}
+  export NODE_PATH="`cygpath -wa ${NPM_ROOT}/node_modules`"
+  
+  EXTRA_PATH+=":${NPM_ROOT}"
 fi
+
+## Ruby
+if which gem >/dev/null; then
+  export GEM_ROOT="`cygpath -wa $(ruby -rubygems -e 'puts Gem.user_dir')`"
+  
+  EXTRA_PATH+=":`cygpath -ua ${GEM_ROOT}`/bin"
+fi
+
+export PATH="${PREPEND_PATH}${EXTRA_PATH}:${SYSTEM_PATH}"
 
 # User Trusted Certificates
 export SSL_CERT_FILE=${SSL_CERT_FILE:="/usr/ssl/cert.pem"}

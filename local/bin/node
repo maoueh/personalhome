@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-exec winpty "$NODE_ROOT/node_exec.exe" "$@"
+exec winpty "$NODE_ROOT/node.exe" "$@"
